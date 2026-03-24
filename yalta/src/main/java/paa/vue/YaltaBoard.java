@@ -5,26 +5,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import paa.modele.Case;
 
 public class YaltaBoard extends Group {
 
     private static final int EXPECTED_CELLS = 96;
-    private static final String CLICK_MESSAGE_PREFIX = "Case Yalta cliquee: ";
     private static final String BOARD_FXML_PATH = "/paa/yalta-board.fxml";
 
     public YaltaBoard() {
         loadFromFxml();
         addIndexTexts(1.0);
+        testclick();
 
         int cellCount = getCellPolygons().size();
         System.out.println("Plateau Yalta initialise: " + cellCount + " cases.");
@@ -33,12 +32,6 @@ public class YaltaBoard extends Group {
         }
     }
 
-    @FXML
-    @SuppressWarnings("unused")
-    private void handleCellClick(MouseEvent event) {
-        Node source = (Node) event.getSource();
-        System.out.println(CLICK_MESSAGE_PREFIX + source.getId());
-    }
 
     private void loadFromFxml() {
         FXMLLoader loader = new FXMLLoader(YaltaBoard.class.getResource(BOARD_FXML_PATH));
@@ -98,5 +91,13 @@ public class YaltaBoard extends Group {
         text.setY(centerY + textHeight / 4.0);
 
         return text;
+    }
+
+    public void testclick(){
+        List<Polygon> cells = getCellPolygons();
+        for (Polygon cell : cells) {
+            Case c = new Case(cell.getId());
+            cell.setOnMouseClicked(c.getAction());
+        }
     }
 }
