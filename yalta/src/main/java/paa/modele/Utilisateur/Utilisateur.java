@@ -17,8 +17,12 @@ public abstract class Utilisateur {
         return tour;
     }
 
-    public void setTour(boolean tour) {
-        this.tour = tour;
+    public void debuterTour() {
+        this.tour = true;
+    }
+
+    public void finirTour() {
+        this.tour = false;
     }
 
     public Couleur getCouleur() {

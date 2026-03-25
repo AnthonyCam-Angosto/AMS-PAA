@@ -13,7 +13,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import paa.modele.Case;
+import paa.modele.Plateau;
 
 public class YaltaBoard extends Group {
 
@@ -23,7 +23,10 @@ public class YaltaBoard extends Group {
     public YaltaBoard() {
         loadFromFxml();
         addIndexTexts(1.0);
-        testclick();
+
+        Plateau plateau = Plateau.getInstance(); 
+        plateau.setPolygons(getCellPolygons());
+        plateau.createPieces();
 
         int cellCount = getCellPolygons().size();
         System.out.println("Plateau Yalta initialise: " + cellCount + " cases.");
@@ -91,13 +94,5 @@ public class YaltaBoard extends Group {
         text.setY(centerY + textHeight / 4.0);
 
         return text;
-    }
-
-    public void testclick(){
-        List<Polygon> cells = getCellPolygons();
-        for (Polygon cell : cells) {
-            Case c = new Case(cell.getId());
-            cell.setOnMouseClicked(c.getAction());
-        }
     }
 }

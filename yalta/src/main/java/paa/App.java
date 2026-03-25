@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import paa.vue.Menu;
+import paa.vue.Main;
 import paa.vue.YaltaBoard;
 
 public class App extends Application {
@@ -44,7 +44,7 @@ public class App extends Application {
     }
 
     private Parent createMenuRoot(Stage primaryStage) {
-        Menu menu = new Menu(this);
+        Main menu = new Main(this);
         return menu;
     }
 

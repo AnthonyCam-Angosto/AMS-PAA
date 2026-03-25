@@ -2,8 +2,8 @@ package paa.modele.Element;
 
 import paa.modele.Couleur;
 
-public class Fous extends Piece {
-    public Fous(Couleur couleur) {
+public class Fou extends Piece {
+    public Fou(Couleur couleur) {
         super(3, couleur);
     }
 
