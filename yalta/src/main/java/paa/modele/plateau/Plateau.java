@@ -1,12 +1,11 @@
-package paa.modele;
+package paa.modele.plateau;
 
-import java.util.List;
-
-import javafx.scene.shape.Polygon;
+import paa.modele.Couleur;
 import paa.modele.Element.Piece;
+import paa.modele.Element.PieceFactoryStandard;
 
 public class Plateau implements CaseComponent {
-    private Case[][][] cases;
+    private final Case[][][] cases;
 
     private static Plateau instance = null;
 
@@ -15,7 +14,6 @@ public class Plateau implements CaseComponent {
         for (int i = 1; i < 4; i++) {
             initCases(i);
         }
-        printCases();
     }
 
     private void printCases() {
@@ -73,14 +71,6 @@ public class Plateau implements CaseComponent {
 
     public Case getCase(int x, int y, int z) {
         return cases[x][y][z];
-    }
-
-    public void setPolygons(List<Polygon> cellPolygons) {
-        for (Polygon cell : cellPolygons) {
-            String id = cell.getId();
-            Case c = getCaseById(id);
-            c.setPolygon(cell);
-        }
     }
 
     public Case getCaseById(String id) {

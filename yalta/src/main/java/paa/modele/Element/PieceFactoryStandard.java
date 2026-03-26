@@ -1,12 +1,6 @@
-package paa.modele;
+package paa.modele.Element;
 
-import paa.modele.Element.Cavalier;
-import paa.modele.Element.Fou;
-import paa.modele.Element.Piece;
-import paa.modele.Element.Pion;
-import paa.modele.Element.Reine;
-import paa.modele.Element.Roi;
-import paa.modele.Element.Tour;
+import paa.modele.Couleur;
 import paa.vue.PieceView;
 
 public class PieceFactoryStandard extends PieceFactory {

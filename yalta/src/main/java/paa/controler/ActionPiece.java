@@ -1,6 +1,6 @@
 package paa.controler;
 
-import paa.modele.Case;
+import paa.modele.plateau.Case;
 
 public class ActionPiece implements ActionCase {
     private final Case cellCase;

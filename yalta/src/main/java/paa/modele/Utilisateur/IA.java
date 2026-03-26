@@ -32,5 +32,15 @@ public class IA extends Utilisateur {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'mat'");
     }
+
+    @Override
+    public void onTourChange(Utilisateur joueur) {
+        if (joueur == this) {
+            debuterTour();
+            System.out.println("C'est le tour de l'IA " + joueur.getCouleur() + "!");
+        } else {
+            finirTour();
+        }
+    }
     
 }

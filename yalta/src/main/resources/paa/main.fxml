@@ -13,6 +13,6 @@
             <Label text="Nombre de joueurs :" style="-fx-font-family: 'Consolas'; -fx-font-size: 18;" />
             <Spinner fx:id="playerCountSpinner" editable="false" prefWidth="120" />
         </VBox>
-        <Button fx:id="playButton" prefHeight="48" prefWidth="260" text="Lancer le jeu" style="-fx-font-family: 'Consolas'; -fx-font-size: 18; -fx-font-weight: bold;" onMouseClicked="#handleCellClick" />
+        <Button fx:id="playButton" prefHeight="48" prefWidth="260" text="Lancer le jeu" style="-fx-font-family: 'Consolas'; -fx-font-size: 18; -fx-font-weight: bold;" onAction="#handleCellClick" />
     </children>
 </fx:root>

@@ -1,5 +1,5 @@
 package paa.modele;
 
 public enum Couleur {
-    BLANC, NOIR,Rouge
+    BLANC, NOIR,ROUGE
 }

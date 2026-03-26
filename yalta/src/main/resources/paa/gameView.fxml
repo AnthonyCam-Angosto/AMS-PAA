@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import paa.vue.PlateauView?>
+
+<fx:root type="VBox" alignment="TOP_CENTER" spacing="28" style="-fx-background-color: linear-gradient(to bottom, #f3f3ec, #d9dfc8);" xmlns:fx="http://javafx.com/fxml">
+<children>
+    <Label fx:id="titleLabel" text="Echecs Yalta" style="-fx-font-family: 'Consolas'; -fx-font-size: 42; -fx-font-weight: bold;" />
+
+    <StackPane fx:id="boardContainer">
+        <children>
+            <PlateauView fx:id="plateauView" />
+        </children>
+    </StackPane>
+
+</children>
+</fx:root>

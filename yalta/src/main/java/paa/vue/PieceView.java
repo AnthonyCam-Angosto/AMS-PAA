@@ -8,19 +8,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import paa.modele.Couleur;
 
-public class PieceView extends StackPane {
+public class PieceView extends StackPane implements LoadFxml {
     private ImageView icon;
 
     
     public PieceView(String type,Couleur couleur) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/paa/piece-view.fxml"));
-        try {
-            StackPane content = loader.load();
-            getChildren().setAll(content);
-            icon = (ImageView) loader.getNamespace().get("icon");
-        } catch (IOException ex) {
-            System.getLogger(PieceView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+        loadFromFxml();
 
         if (icon != null) {
             String imagePath = "/images/" + couleur.name() + "-" + type + ".png";
@@ -36,6 +29,18 @@ public class PieceView extends StackPane {
         }
         icon.setFitWidth(size);
         icon.setFitHeight(size);
+    }
+
+    @Override
+    public void loadFromFxml() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/paa/piece-view.fxml"));
+        try {
+            StackPane content = loader.load();
+            getChildren().setAll(content);
+            icon = (ImageView) loader.getNamespace().get("icon");
+        } catch (IOException ex) {
+            System.getLogger(PieceView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 
 }

@@ -31,5 +31,15 @@ public class Joueur extends Utilisateur {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'mat'");
     }
+
+    @Override
+    public void onTourChange(Utilisateur joueur) {
+        if (joueur == this) {
+            debuterTour();
+            System.out.println("C'est votre tour, " + joueur.getCouleur() + "!");
+        } else {
+            finirTour();
+        }
+    }
     
 }

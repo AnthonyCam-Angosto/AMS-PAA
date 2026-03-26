@@ -1,10 +1,16 @@
 package paa.modele;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import paa.modele.Utilisateur.IA;
+import paa.modele.Utilisateur.Joueur;
 import paa.modele.Utilisateur.Utilisateur;
 
-public class Partie {
+public class Partie implements PartieSubject {
     private int tour;
-    private Utilisateur[] joueurs;
+    private final Utilisateur[] joueurs;
+    private final List<PartieObserver> observers=new ArrayList<>();
 
     private static Partie instance = null;
 
@@ -25,12 +31,9 @@ public class Partie {
     }
     public void tourSuivant() {
         tour++;
-        int val=tour%3;
-        if(val==0) {
-            val=3;
-        }
-        joueurs[val-1].debuterTour();
-        joueurs[(val+2)%3].finirTour();
+        Utilisateur joueurActuel=joueurs[tour%3-1];
+        System.out.println("C'est au joueur " + joueurActuel.getCouleur() + " de jouer.");
+        notifyTourChange(joueurActuel);
     }
     public Utilisateur[] getJoueurs() {
         return joueurs;
@@ -56,19 +59,39 @@ public class Partie {
         }
     }
 
-    public void initPartie() {
-        Utilisateur[] tempsJ = new Utilisateur[3];
-        for (Utilisateur joueur : joueurs) {
-            switch (joueur.getCouleur()) {
-                case Couleur.BLANC -> {
-                    joueur.debuterTour();
-                    tempsJ[0] = joueur;
-                }
-                case Couleur.NOIR -> tempsJ[1] = joueur;
-                case Couleur.Rouge -> tempsJ[2] = joueur;
-            }
+    public void initialiserPartie(int nbNoIA) {
+        reset();
+        Couleur[] couleurs = { Couleur.BLANC, Couleur.NOIR, Couleur.ROUGE };
+
+        Utilisateur joueur;
+        for (int i = 0; i < nbNoIA; i++) {
+            joueur = new Joueur(couleurs[i]);
+            addJoueur(joueur);
+            addObserver(joueur);
         }
-        this.joueurs = tempsJ;
+        for (int i = nbNoIA; i < 3; i++) {
+            joueur = new IA(couleurs[i]);
+            addJoueur(joueur);
+            addObserver(joueur);
+        }
+        tourSuivant();
+    }
+
+    @Override
+    public void addObserver(PartieObserver o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(PartieObserver o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyTourChange(Utilisateur joueur) {
+        for (PartieObserver observer : observers) {
+            observer.onTourChange(joueur);
+        }
     }
 
     

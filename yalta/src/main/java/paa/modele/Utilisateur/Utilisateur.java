@@ -1,8 +1,9 @@
 package paa.modele.Utilisateur;
 
 import paa.modele.Couleur;
+import paa.modele.PartieObserver;
 
-public abstract class Utilisateur {
+public abstract class Utilisateur implements PartieObserver {
     protected boolean tour;
     protected Couleur couleur;
     protected int score;
@@ -17,11 +18,11 @@ public abstract class Utilisateur {
         return tour;
     }
 
-    public void debuterTour() {
+    protected void debuterTour() {
         this.tour = true;
     }
 
-    public void finirTour() {
+    protected void finirTour() {
         this.tour = false;
     }
 
