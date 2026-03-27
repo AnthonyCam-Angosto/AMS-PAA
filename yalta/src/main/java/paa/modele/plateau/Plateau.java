@@ -1,8 +1,10 @@
 package paa.modele.plateau;
 
+import paa.controler.ActionDeplacementPossible;
 import paa.modele.Couleur;
 import paa.modele.Element.Piece;
 import paa.modele.Element.PieceFactoryStandard;
+import paa.modele.Partie;
 
 public class Plateau implements CaseComponent {
     private final Case[][][] cases;
@@ -73,6 +75,19 @@ public class Plateau implements CaseComponent {
         return cases[x][y][z];
     }
 
+    public int[] getIndexCase(Case c) {
+        for (int k = 0; k < 3; k++) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (cases[i][j][k].getId().equals(c.getId())) {
+                        return new int[]{i, j, k};
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public Case getCaseById(String id) {
         for (int k = 0; k < 3; k++) {
             for (int i = 0; i < 4; i++) {
@@ -89,7 +104,7 @@ public class Plateau implements CaseComponent {
 
     public void createPieces(){
         PieceFactoryStandard factory = new PieceFactoryStandard();
-        Couleur[] couleurs = {Couleur.BLANC, Couleur.NOIR, Couleur.BLANC};
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.ROUGE, Couleur.NOIR};
 
         String type = "pion";
         for (int k = 0; k < 3; k++) {
@@ -118,6 +133,29 @@ public class Plateau implements CaseComponent {
             cases[0][4][k].setPiece(piece);
         }
         
+    }
+
+    public void deplacementPiece(Case caseDepart, Case caseArrivee) {
+        Piece piece = caseDepart.getPiece();
+        if (piece != null) {
+            caseArrivee.setPiece(piece);
+            caseDepart.setPiece(null);
+        }
+        deselectionner();
+        Partie.getInstance().tourSuivant();
+    }
+
+    @Override
+    public void deselectionner() {
+        for (int k = 0; k < 3; k++) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if(cases[i][j][k].getAction() instanceof ActionDeplacementPossible){
+                        cases[i][j][k].deselectionner();
+                    }
+                }
+            }
+        }
     }
 
 

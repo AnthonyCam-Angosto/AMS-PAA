@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import paa.modele.plateau.CaseComponent;
 import paa.modele.plateau.Plateau;
 
+
 public class PlateauView extends Group implements CaseComponent, LoadFxml {
     private static final String BOARD_FXML_PATH = "/paa/plateau.fxml";
 
@@ -113,6 +114,13 @@ public class PlateauView extends Group implements CaseComponent, LoadFxml {
                 }
             }
         }
+    }
+
+    @Override
+    public void deselectionner() {
+            for (CaseView caseView : getCaseViews()) {
+                caseView.deselectionner();
+            }
     }
 
     @Override

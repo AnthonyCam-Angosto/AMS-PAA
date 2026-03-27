@@ -1,7 +1,7 @@
 package paa.controler;
 
-import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import paa.modele.Partie;
@@ -20,7 +20,7 @@ public class MenuControlleur{
     @FXML
     @SuppressWarnings("unused")
     private void initialize() {
-        playerCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3, 1));
+        playerCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3, 3));
     }
 
     @FXML

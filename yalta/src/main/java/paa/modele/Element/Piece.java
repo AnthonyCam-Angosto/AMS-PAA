@@ -1,6 +1,7 @@
 package paa.modele.Element;
 
 import paa.modele.Couleur;
+import paa.modele.plateau.Case;
 import paa.vue.PieceView;
 
 public abstract class Piece {
@@ -21,7 +22,13 @@ public abstract class Piece {
         return view;
     }
 
+    public Couleur getCouleur() {
+        return couleur;
+    }
+
+    
+
     abstract public void deplacement();
     abstract public void manger();
-    abstract public void coup_disponible();
+    abstract public void coup_disponible(Case caseActuelle);
 }

@@ -7,5 +7,7 @@ public interface CaseSubject {
     void supprimerObservateur(CaseObserver observer);
     void notifyPieceChanged();
     void notifyActionChanged();
+    void notifySelected();
+    void notifyDeselected();
 
 }

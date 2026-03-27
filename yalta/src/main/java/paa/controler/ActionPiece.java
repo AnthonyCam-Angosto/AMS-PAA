@@ -1,6 +1,10 @@
 package paa.controler;
 
+import paa.modele.Couleur;
+import paa.modele.Element.Piece;
+import paa.modele.Partie;
 import paa.modele.plateau.Case;
+import paa.modele.plateau.Plateau;
 
 public class ActionPiece implements ActionCase {
     private final Case cellCase;
@@ -11,6 +15,11 @@ public class ActionPiece implements ActionCase {
 
     @Override
     public void click() {
-        System.out.println("ActionPiece: " + cellCase.getId() + " - pièce présente type:"+cellCase.getPiece().getClass().getSimpleName());
+        Couleur couleurJ=Partie.getInstance().getCouleurJoueurActuel();
+        Piece piece = cellCase.getPiece();
+        if(piece.getCouleur() == couleurJ){
+            Plateau.getInstance().deselectionner();
+            piece.coup_disponible(cellCase);
+        }
     }
 }

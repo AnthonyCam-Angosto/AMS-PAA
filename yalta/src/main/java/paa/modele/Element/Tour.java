@@ -1,6 +1,7 @@
 package paa.modele.Element;
 
 import paa.modele.Couleur;
+import paa.modele.plateau.Case;
 
 public class Tour extends Piece {
     public Tour( Couleur couleur) {
@@ -18,7 +19,7 @@ public class Tour extends Piece {
     }
 
     @Override
-    public void coup_disponible() {
+    public void coup_disponible(Case caseActuelle) {
         // Implémentation des coups disponibles pour la tour
     }
     

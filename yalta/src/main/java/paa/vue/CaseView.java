@@ -61,4 +61,23 @@ public class CaseView extends Polygon implements CaseObserver,CaseComponent {
         throw new UnsupportedOperationException("Unimplemented method 'mettreAJour'");
     }
 
+
+    @Override
+    public void onSelected(Case c) {
+        this.setStyle("-fx-fill: rgba(56, 149, 255, 0.42); -fx-stroke: #0b63d8; -fx-stroke-width: 4; -fx-stroke-type: inside;");
+    }
+
+
+    @Override
+    public void deselectionner() {
+        this.setStyle("");
+    }
+
+    @Override
+    public void onDeselected(Case c) {
+        if (c.getId().equals(this.getId())) {
+            this.setStyle("");
+        }
+    }
+
 }

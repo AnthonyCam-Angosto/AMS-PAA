@@ -15,7 +15,7 @@ public class Partie implements PartieSubject {
     private static Partie instance = null;
 
     private Partie() {
-        this.tour = 0;
+        this.tour = -1;
         this.joueurs = new Utilisateur[3];
     }
 
@@ -31,16 +31,20 @@ public class Partie implements PartieSubject {
     }
     public void tourSuivant() {
         tour++;
-        Utilisateur joueurActuel=joueurs[tour%3-1];
+        Utilisateur joueurActuel=joueurs[tour%3];
         System.out.println("C'est au joueur " + joueurActuel.getCouleur() + " de jouer.");
         notifyTourChange(joueurActuel);
     }
     public Utilisateur[] getJoueurs() {
         return joueurs;
     }
+
+    public Couleur getCouleurJoueurActuel() {
+        return joueurs[tour % 3].getCouleur();
+    }
     
     public void reset() {
-        tour = 0;
+        tour = -1;
         for (int i = 0; i < joueurs.length; i++) {
             joueurs[i] = null;
         }

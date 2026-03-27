@@ -36,7 +36,11 @@ public class Case implements CaseComponent, CaseSubject {
 
     public void setPiece(Piece piece) {
         this.piece = piece;
-        this.setAction(new ActionPiece(this));
+        if(piece != null){
+            this.setAction(new ActionPiece(this));
+        }else{
+            this.setAction(new ActionVide(this));
+        }
         notifyPieceChanged();
 
     }
@@ -44,6 +48,14 @@ public class Case implements CaseComponent, CaseSubject {
     public void setAction(ActionCase action) {
         this.action = action;
         notifyActionChanged();
+        switch (action.getClass().getSimpleName()) {
+            case "ActionDeplacementPossible":
+                notifySelected();
+                break;
+            default:
+                notifyDeselected();
+                break;
+        }
     }
 
     
@@ -74,5 +86,25 @@ public class Case implements CaseComponent, CaseSubject {
         for (CaseObserver observer : observers) {
             observer.onActionChanged(this);
         }
+    }
+
+    @Override
+    public void notifySelected() {
+        for (CaseObserver observer : observers) {
+            observer.onSelected(this);
+        }
+
+    }
+
+    @Override
+    public void notifyDeselected() {
+        for (CaseObserver observer : observers) {
+            observer.onDeselected(this);
+        }
+    }
+
+    @Override
+    public void deselectionner() {
+        this.setAction(new ActionVide(this));
     }
 }
