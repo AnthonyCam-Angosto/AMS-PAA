@@ -39,7 +39,7 @@ public abstract class Utilisateur implements PartieObserver {
     }
 
     abstract public void jouer();
-    abstract public void deplacer();
     abstract public void evoluer();
     abstract public void mat();
+    abstract public void onTourChange(Utilisateur joueur);
 }

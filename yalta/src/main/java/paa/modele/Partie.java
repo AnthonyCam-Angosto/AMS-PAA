@@ -12,6 +12,8 @@ public class Partie implements PartieSubject {
     private final Utilisateur[] joueurs;
     private final List<PartieObserver> observers=new ArrayList<>();
 
+    private Couleur[] ordre= {Couleur.BLANC, Couleur.NOIR, Couleur.ROUGE};
+
     private static Partie instance = null;
 
     private Partie() {
@@ -24,6 +26,10 @@ public class Partie implements PartieSubject {
             instance = new Partie();
         }
         return instance;
+    }
+
+    public Couleur[] getOrdre() {
+        return ordre;
     }
 
     public int getTour() {
@@ -65,16 +71,15 @@ public class Partie implements PartieSubject {
 
     public void initialiserPartie(int nbNoIA) {
         reset();
-        Couleur[] couleurs = { Couleur.BLANC, Couleur.NOIR, Couleur.ROUGE };
 
         Utilisateur joueur;
         for (int i = 0; i < nbNoIA; i++) {
-            joueur = new Joueur(couleurs[i]);
+            joueur = new Joueur(ordre[i]);
             addJoueur(joueur);
             addObserver(joueur);
         }
         for (int i = nbNoIA; i < 3; i++) {
-            joueur = new IA(couleurs[i]);
+            joueur = new IA(ordre[i]);
             addJoueur(joueur);
             addObserver(joueur);
         }

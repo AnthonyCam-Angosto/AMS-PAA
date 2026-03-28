@@ -6,6 +6,7 @@ import java.util.List;
 import paa.controler.ActionCase;
 import paa.controler.ActionPiece;
 import paa.controler.ActionVide;
+import paa.modele.TypeAction;
 import paa.modele.Element.Piece;
 import paa.vue.CaseObserver;
 
@@ -34,6 +35,10 @@ public class Case implements CaseComponent, CaseSubject {
         return piece;
     }
 
+    public boolean isEmpty() {
+        return piece == null;
+    }
+
     public void setPiece(Piece piece) {
         this.piece = piece;
         if(piece != null){
@@ -49,8 +54,11 @@ public class Case implements CaseComponent, CaseSubject {
         this.action = action;
         notifyActionChanged();
         switch (action.getClass().getSimpleName()) {
+            case "ActionManger":
+                notifySelected(TypeAction.MANGER);
+                break;
             case "ActionDeplacementPossible":
-                notifySelected();
+                notifySelected(TypeAction.DEPLACEMENT);
                 break;
             default:
                 notifyDeselected();
@@ -89,9 +97,9 @@ public class Case implements CaseComponent, CaseSubject {
     }
 
     @Override
-    public void notifySelected() {
+    public void notifySelected(TypeAction t) {
         for (CaseObserver observer : observers) {
-            observer.onSelected(this);
+            observer.onSelected(t);
         }
 
     }
@@ -106,5 +114,9 @@ public class Case implements CaseComponent, CaseSubject {
     @Override
     public void deselectionner() {
         this.setAction(new ActionVide(this));
+    }
+
+    public String toString() {
+        return id;
     }
 }

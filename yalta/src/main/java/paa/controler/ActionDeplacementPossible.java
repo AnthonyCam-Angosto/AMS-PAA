@@ -1,5 +1,7 @@
 package paa.controler;
 
+import paa.modele.Element.Piece;
+import paa.modele.Element.Pion;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
@@ -14,6 +16,11 @@ public class ActionDeplacementPossible implements ActionCase {
 
     @Override
     public void click() {
+        Piece piece = casePiece.getPiece();
+        if(piece instanceof Pion){
+            Pion pion = (Pion) piece;
+            pion.setFirstMove(false);
+        }
         Plateau.getInstance().deplacementPiece(casePiece, actuel);
     }
     

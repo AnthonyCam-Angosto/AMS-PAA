@@ -10,15 +10,8 @@ public class Joueur extends Utilisateur {
 
     @Override
     public void jouer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'jouer'");
     }
 
-    @Override
-    public void deplacer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deplacer'");
-    }
 
     @Override
     public void evoluer() {
@@ -36,7 +29,7 @@ public class Joueur extends Utilisateur {
     public void onTourChange(Utilisateur joueur) {
         if (joueur == this) {
             debuterTour();
-            System.out.println("C'est votre tour, " + joueur.getCouleur() + "!");
+            jouer();
         } else {
             finirTour();
         }
