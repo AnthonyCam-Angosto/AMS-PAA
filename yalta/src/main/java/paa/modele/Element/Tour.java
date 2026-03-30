@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paa.modele.Couleur;
+import paa.modele.deplacement.LinePathStrategy;
+import paa.modele.deplacement.PathStrategy;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Tour extends Piece {
-    public Tour( Couleur couleur) {
-        super(5, couleur);
+    private PathStrategy pathStrategy;
+
+    public Tour( Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
+        super(5, couleur,switchPartieStrategy);
+        this.pathStrategy = new LinePathStrategy();
+
     }
 
     @Override
@@ -17,9 +24,9 @@ public class Tour extends Piece {
         List<Case> deplacements = new ArrayList<>();
 
         for(int i=0;i<2;i++){
-            List<Case> line = plateau.getLine(indexActuel, i);
+            List<Case> line = pathStrategy.getPath(plateau, indexActuel, i, switchPartieStrategy);
 
-            List<List<Case>> splitLine = splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
+            List<List<Case>> splitLine = pathStrategy.splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
 
             for (int j = 0; j < 2; j++) {
                 for (Case c : splitLine.get(j)) {
@@ -39,9 +46,9 @@ public class Tour extends Piece {
         List<Case> captures = new ArrayList<>();
 
         for(int i=0;i<2;i++){
-            List<Case> line = plateau.getLine(indexActuel, i);
+            List<Case> line = pathStrategy.getPath(plateau, indexActuel, i, switchPartieStrategy);
 
-            List<List<Case>> splitLine = splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
+            List<List<Case>> splitLine = pathStrategy.splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
 
             for (int j = 0; j < 2; j++) {
                 for (Case c : splitLine.get(j)) {
@@ -60,35 +67,6 @@ public class Tour extends Piece {
     @Override
     protected Case promotion(Plateau plateau, int[] indexActuel) {
         return null;
-    }
-
-    @Override
-    protected Case switchPartie(Plateau plateau, int[] indexActuel, int isManger) {
-        return null;
-    }
-
-    private List<List<Case>> splitLine(List<Case> line, Case separateur) {
-        List<Case> line1 = new ArrayList<>();
-        List<Case> line2 = new ArrayList<>();
-        boolean firstPart = true;
-
-        for (Case c : line) {
-            if (c.equals(separateur)) {
-                firstPart = false;
-                continue;
-            }
-            if(firstPart){
-                line1.add(c);
-            }else{
-                line2.add(c);
-            }
-        }
-        line1=line1.reversed();
-
-        List<List<Case>> result = new ArrayList<>(2);
-        result.add(line1);
-        result.add(line2);
-        return result;
     }
     
 }

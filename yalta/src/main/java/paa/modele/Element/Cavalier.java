@@ -3,12 +3,13 @@ package paa.modele.Element;
 import java.util.List;
 
 import paa.modele.Couleur;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Cavalier extends Piece {
-    public Cavalier( Couleur couleur) {
-        super(3, couleur);
+    public Cavalier( Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
+        super(3, couleur,switchPartieStrategy);
     }
 
     @Override
@@ -26,12 +27,6 @@ public class Cavalier extends Piece {
     @Override
     protected Case promotion(Plateau plateau, int[] indexActuel) {
         return null;
-    }
-
-    @Override
-    protected Case switchPartie(Plateau plateau, int[] indexActuel, int isManger) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'switchPartie'");
     }
     
 }

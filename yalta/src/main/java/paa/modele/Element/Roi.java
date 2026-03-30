@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paa.modele.Couleur;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Roi extends Piece {
-    public Roi( Couleur couleur) {
-        super(1000, couleur);
+
+    public Roi( Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
+        super(1000, couleur,switchPartieStrategy);
     }
 
     @Override
@@ -31,7 +33,7 @@ public class Roi extends Piece {
         }
         if(indexActuel[0]==3){
             for(int i=-1;i<=1;i++){
-                Case c=switchPartie(plateau,indexActuel,i);
+                Case c=switchPartieStrategy.resolve(plateau,indexActuel,i);
                 if(c.isEmpty()){
                 deplacements.add(c);
                 }
@@ -59,7 +61,7 @@ public class Roi extends Piece {
         }
         if(indexActuel[0]==3){
             for(int i=-1;i<=1;i++){
-                Case c=switchPartie(plateau,indexActuel,i);
+                Case c=switchPartieStrategy.resolve(plateau,indexActuel,i);
                 if(!c.isEmpty() && c.getPiece().getCouleur() != this.getCouleur()){
                 captures.add(c);
                 }
@@ -72,25 +74,4 @@ public class Roi extends Piece {
     protected Case promotion(Plateau plateau, int[] indexActuel) {
         return null;
     }
-
-    @Override
-    protected Case switchPartie(Plateau plateau, int[] indexActuel,int diagonal){
-        if(indexActuel[1]<4){
-            Case c =switch (indexActuel[2]) {
-                case 0 ->plateau.getCase(indexActuel[0], indexActuel[1]+diagonal, 1);
-                case 1 ->plateau.getCase(indexActuel[0], indexActuel[1]+diagonal, 0);
-                case 2 ->plateau.getCase(indexActuel[0], 7-indexActuel[1]+diagonal, 0);
-                default->null;
-            };
-            return c;
-        }else{
-                Case c =switch (indexActuel[2]) {
-                case 0 ->plateau.getCase(indexActuel[0], 7-indexActuel[1]+diagonal, 2);
-                case 1 ->plateau.getCase(indexActuel[0], indexActuel[1]+diagonal, 2);
-                case 2 ->plateau.getCase(indexActuel[0], indexActuel[1]+diagonal, 1);
-                default->null;
-            };
-            return c;
-        }
-    } 
 }

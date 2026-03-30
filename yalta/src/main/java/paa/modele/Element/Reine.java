@@ -1,26 +1,124 @@
 package paa.modele.Element;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import paa.modele.Couleur;
+import paa.modele.deplacement.DiagonalPathStrategy;
+import paa.modele.deplacement.LinePathStrategy;
+import paa.modele.deplacement.PathStrategy;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Reine extends Piece {
-    public Reine(Couleur couleur) {
-        super(9, couleur);
+    private SwitchPartieStrategy diagonalSwitchPartie;
+
+    private PathStrategy linePath;
+    private PathStrategy diagonalPath;
+
+
+
+
+    public Reine(Couleur couleur,SwitchPartieStrategy switchPartieStrategy,SwitchPartieStrategy diagonalSwitchPartie) {
+        super(9, couleur,switchPartieStrategy);
+        this.diagonalSwitchPartie = diagonalSwitchPartie;
+        linePath=new LinePathStrategy();
+        diagonalPath=new DiagonalPathStrategy();
     }
 
     @Override
     protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
-        // Implémentation du déplacement de la reine
-        return List.of();
+        List<Case> deplacements = new ArrayList<>();
+        Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
+
+        for(int i=0;i<2;i++){
+            List<Case> line = linePath.getPath(plateau, indexActuel, i, switchPartieStrategy);
+
+            List<List<Case>> splitLine = linePath.splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
+
+            for (int j = 0; j < 2; j++) {
+                for (Case c : splitLine.get(j)) {
+                    if (c.isEmpty()) {
+                        deplacements.add(c);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        for(int i=0;i<3;i++){
+            List<Case> line = diagonalPath.getPath(plateau, indexActuel, i, diagonalSwitchPartie);
+            if (!line.contains(caseActuelle)) {
+                continue;
+            }
+            if (i == 2 && !traverseCroisementMilieu(line)) {
+                continue;
+            }
+
+            List<List<Case>> splitLine = diagonalPath.splitLine(line, caseActuelle);
+
+            for (int j = 0; j < 2; j++) {
+                for (Case c : splitLine.get(j)) {
+                    if (c.isEmpty()) {
+                        deplacements.add(c);
+                   } else {
+                        break;
+                   }
+                }
+            }
+        }
+
+        return deplacements;
     }
 
     @Override
     protected List<Case> manger(Plateau plateau, int[] indexActuel) {
-        // Implémentation de la capture de la reine
-        return List.of();
+        List<Case> captures = new ArrayList<>();
+
+        for(int i=0;i<2;i++){
+            List<Case> line = linePath.getPath(plateau, indexActuel, i, switchPartieStrategy);
+
+            List<List<Case>> splitLine = linePath.splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
+
+            for (int j = 0; j < 2; j++) {
+                for (Case c : splitLine.get(j)) {
+                    if (!c.isEmpty() && c.getPiece().getCouleur() != this.getCouleur()) {
+                        captures.add(c);
+                        break;
+                    } else if (!c.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
+
+        for(int i=0;i<3;i++){
+            List<Case> line = diagonalPath.getPath(plateau, indexActuel, i, diagonalSwitchPartie);
+            if (!line.contains(caseActuelle)) {
+                continue;
+            }
+            if (i == 2 && !traverseCroisementMilieu(line)) {
+                continue;
+            }
+            List<List<Case>> splitLine = diagonalPath.splitLine(line, caseActuelle);
+
+            for (int j = 0; j < 2; j++) {
+                for (Case c : splitLine.get(j)) {
+                    if (!c.isEmpty() && c.getPiece().getCouleur() != this.getCouleur()) {
+                        captures.add(c);
+                        break;
+                    } else if (!c.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+        return captures;
     }
 
     @Override
@@ -28,10 +126,14 @@ public class Reine extends Piece {
         return null;
     }
 
-    @Override
-    protected Case switchPartie(Plateau plateau, int[] indexActuel, int isManger) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'switchPartie'");
+    private boolean traverseCroisementMilieu(List<Case> line) {
+        for (Case c : line) {
+            String id = c.getId();
+            if ("D4".equals(id) || "E4".equals(id) || "D5".equals(id) || "I5".equals(id)||"I9".equals(id)||"E9".equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

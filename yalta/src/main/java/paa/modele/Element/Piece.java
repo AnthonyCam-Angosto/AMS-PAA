@@ -6,6 +6,7 @@ import paa.controler.ActionDeplacementPossible;
 import paa.controler.ActionManger;
 import paa.controler.ActionPromotion;
 import paa.modele.Couleur;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 import paa.vue.PieceView;
@@ -14,10 +15,12 @@ public abstract class Piece {
     protected  int valeur;
     protected Couleur couleur;
     protected PieceView view;
+    protected SwitchPartieStrategy switchPartieStrategy;
     
-    public Piece(int valeur, Couleur couleur) {
+    public Piece(int valeur, Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
         this.valeur = valeur;
         this.couleur = couleur;
+        this.switchPartieStrategy = switchPartieStrategy;
     }
 
     public void createView(PieceView view) {
@@ -57,6 +60,5 @@ public abstract class Piece {
     abstract protected List<Case> deplacement(Plateau plateau, int[] indexActuel);
     abstract protected List<Case> manger(Plateau plateau, int[] indexActuel);
     abstract protected Case promotion(Plateau plateau, int[] indexActuel);
-    abstract protected Case switchPartie(Plateau plateau, int[] indexActuel,int isManger);
     
 }

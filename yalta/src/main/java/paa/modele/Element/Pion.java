@@ -6,14 +6,15 @@ import java.util.List;
 
 import paa.modele.Couleur;
 import paa.modele.Partie;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Pion extends Piece {
     private boolean firstMove=true;
 
-    public Pion(Couleur couleur) {
-        super(1, couleur);
+    public Pion(Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
+        super(1, couleur,switchPartieStrategy);
     }
 
     public void setFirstMove(boolean firstMove) {
@@ -37,7 +38,7 @@ public class Pion extends Piece {
                 deplacements.add(c);
             }
         }else if(!hasChangedPartie(plateau, indexActuel)){
-            Case c=switchPartie(plateau,indexActuel,0);
+            Case c=switchPartieStrategy.resolve(plateau,indexActuel,0);
             if(c.isEmpty()){
                 deplacements.add(c);
             }
@@ -69,7 +70,7 @@ public class Pion extends Piece {
             for (int i : range) {
                 if(indexActuel[1]+i<0 || indexActuel[1]+i>7) continue;
 
-                Case c = switchPartie(plateau, indexActuel,i); //TODO manque le millieu du plateau changer de plusieur partie
+                Case c = switchPartieStrategy.resolve(plateau, indexActuel, i); //TODO manque le millieu du plateau changer de plusieur partie
                 if(c.getPiece()==null) continue;
                 if (c.getPiece().couleur != this.couleur) {
                     captures.add(c);
@@ -87,27 +88,6 @@ public class Pion extends Piece {
         }
         return captures;
     }
-
-
-    protected Case switchPartie(Plateau plateau, int[] indexActuel,int isManger){
-        if(indexActuel[1]<4){
-            Case c =switch (indexActuel[2]) {
-                case 0 ->plateau.getCase(indexActuel[0], indexActuel[1]+isManger, 1);
-                case 1 ->plateau.getCase(indexActuel[0], indexActuel[1]+isManger, 0);
-                case 2 ->plateau.getCase(indexActuel[0], 7-indexActuel[1]+isManger, 0);
-                default->null;
-            };
-            return c;
-        }else{
-                Case c =switch (indexActuel[2]) {
-                case 0 ->plateau.getCase(indexActuel[0], 7-indexActuel[1]+isManger, 2);
-                case 1 ->plateau.getCase(indexActuel[0], indexActuel[1]+isManger, 2);
-                case 2 ->plateau.getCase(indexActuel[0], indexActuel[1]+isManger, 1);
-                default->null;
-            };
-            return c;
-        }
-    } 
     
 
     private boolean hasChangedPartie(Plateau plateau, int[] indexActuel){

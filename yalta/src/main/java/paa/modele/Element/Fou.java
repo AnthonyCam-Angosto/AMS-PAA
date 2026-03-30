@@ -4,30 +4,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paa.modele.Couleur;
+import paa.modele.deplacement.DiagonalPathStrategy;
+import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Fou extends Piece {
-    public Fou(Couleur couleur) {
-        super(3, couleur);
+    private DiagonalPathStrategy diagonalPathStrategy;
+
+    public Fou(Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
+        super(3, couleur,switchPartieStrategy);
+        this.diagonalPathStrategy = new DiagonalPathStrategy();
     }
 
     @Override
     protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
+        System.out.println("Déplacement du Fou depuis la case "+plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]).getId());
         List<Case> deplacements = new ArrayList<>();
+        Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
+        List<Case> diagonaleClassique0 = diagonalPathStrategy.getPath(plateau, indexActuel, 0, switchPartieStrategy);
+        List<Case> diagonaleClassique1 = diagonalPathStrategy.getPath(plateau, indexActuel, 1, switchPartieStrategy);
 
-        for(int i=0;i<2;i++){
-            List<Case> line = plateau.getDiagonal(indexActuel, 0);
+        for(int i=0;i<3;i++){
+            System.out.println("test début getpath "+i);
+            List<Case> line = diagonalPathStrategy.getPath(plateau, indexActuel, i, switchPartieStrategy);
 
-            List<List<Case>> splitLine = splitLine(line, plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]));
+            if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
+                continue;
+            }
+
+            System.out.println("test fin getpath "+i+" : "+line);
+
+            List<List<Case>> splitLine = diagonalPathStrategy.splitLine(line, caseActuelle);
 
             for (int j = 0; j < 2; j++) {
                 for (Case c : splitLine.get(j)) {
                     if (c.isEmpty()) {
                         deplacements.add(c);
-                    } else {
+                   } else {
                         break;
-                    }
+                   }
                 }
             }
         }
@@ -36,8 +52,33 @@ public class Fou extends Piece {
 
     @Override
     protected List<Case> manger(Plateau plateau, int[] indexActuel) {
-        // Implémentation de la capture du fou
-        return List.of();
+        List<Case> captures = new ArrayList<>();
+        Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
+        List<Case> diagonaleClassique0 = diagonalPathStrategy.getPath(plateau, indexActuel, 0, switchPartieStrategy);
+        List<Case> diagonaleClassique1 = diagonalPathStrategy.getPath(plateau, indexActuel, 1, switchPartieStrategy);
+
+        for(int i=0;i<3;i++){
+            List<Case> line = diagonalPathStrategy.getPath(plateau, indexActuel, i, switchPartieStrategy);
+
+            if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
+                continue;
+            }
+
+
+            List<List<Case>> splitLine = diagonalPathStrategy.splitLine(line, caseActuelle);
+
+            for (int j = 0; j < 2; j++) {
+                for (Case c : splitLine.get(j)) {
+                    if (!c.isEmpty() && c.getPiece().getCouleur() != this.getCouleur()) {
+                        captures.add(c);
+                        break;
+                    } else if (!c.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+        return captures;
     }
 
     @Override
@@ -45,33 +86,17 @@ public class Fou extends Piece {
         return null;
     }
 
-    @Override
-    protected Case switchPartie(Plateau plateau, int[] indexActuel, int isManger) {
-        return null;
-    }
 
-    private List<List<Case>> splitLine(List<Case> line, Case separateur) {
-        List<Case> line1 = new ArrayList<>();
-        List<Case> line2 = new ArrayList<>();
-        boolean firstPart = true;
-
+    private boolean traverseCroisementMilieu(List<Case> line, Case caseActuelle) {
+        line.add(caseActuelle);
+        java.util.Set<String> pivots = new java.util.HashSet<>();
         for (Case c : line) {
-            if (c.equals(separateur)) {
-                firstPart = false;
-                continue;
-            }
-            if(firstPart){
-                line1.add(c);
-            }else{
-                line2.add(c);
+            String id = c.getId();
+            if ("D4".equals(id) || "D5".equals(id) || "I5".equals(id) || "E9".equals(id) || "E4".equals(id) || "E10".equals(id)) {
+                pivots.add(id);
             }
         }
-        line1=line1.reversed();
-
-        List<List<Case>> result = new ArrayList<>(2);
-        result.add(line1);
-        result.add(line2);
-        return result;
+        return pivots.size() >= 2;
     }
     
 }
