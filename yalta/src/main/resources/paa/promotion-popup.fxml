@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root type="VBox" alignment="CENTER" spacing="16" style="-fx-background-color: linear-gradient(to bottom, #f3f3ec, #d9dfc8); -fx-background-radius: 12; -fx-padding: 18;" xmlns:fx="http://javafx.com/fxml">
+    <children>
+        <Label fx:id="titleLabel" text="Promotion" style="-fx-font-family: 'Consolas'; -fx-font-size: 24; -fx-font-weight: bold;" />
+        <Label fx:id="subtitleLabel" text="Choisissez une piece" style="-fx-font-family: 'Consolas'; -fx-font-size: 14;" />
+
+        <HBox alignment="CENTER" spacing="10">
+            <children>
+                <Button fx:id="queenButton" prefWidth="110" prefHeight="40" text="Reine" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
+                <Button fx:id="rookButton" prefWidth="110" prefHeight="40" text="Tour" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
+                <Button fx:id="bishopButton" prefWidth="110" prefHeight="40" text="Fou" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
+                <Button fx:id="knightButton" prefWidth="110" prefHeight="40" text="Cavalier" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
+            </children>
+        </HBox>
+    </children>
+</fx:root>

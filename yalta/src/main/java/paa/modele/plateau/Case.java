@@ -68,7 +68,7 @@ public class Case implements CaseComponent, CaseSubject {
         switch (action.getClass().getSimpleName()) {
             case "ActionManger" -> notifySelected(TypeAction.MANGER);
             case "ActionDeplacementPossible" -> notifySelected(TypeAction.DEPLACEMENT);
-            case "ActionPromotion" -> notifySelected(TypeAction.PROMOTION);
+            case "ActionSpecial" -> notifySelected(TypeAction.SPECIAL);
             default -> notifyDeselected();
         }
     }
@@ -103,13 +103,19 @@ public class Case implements CaseComponent, CaseSubject {
         for (CaseObserver observer : observers) {
             observer.onSelected(t);
         }
-
     }
 
     @Override
     public void notifyDeselected() {
         for (CaseObserver observer : observers) {
             observer.onDeselected(this);
+        }
+    }
+
+    @Override
+    public void notifyPromotion(Case casePromotion) {
+         for (CaseObserver observer : observers) {
+            observer.onPromotion(casePromotion);
         }
     }
 
@@ -122,4 +128,6 @@ public class Case implements CaseComponent, CaseSubject {
     public String toString() {
         return id;
     }
+
+    
 }

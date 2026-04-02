@@ -3,6 +3,7 @@ package paa.modele.plateau;
 
 import paa.controler.ActionManger;
 import paa.controler.ActionPiece;
+import paa.controler.ActionSpecial;
 import paa.controler.ActionVide;
 import paa.modele.Couleur;
 import paa.modele.Element.Piece;
@@ -142,12 +143,12 @@ public class Plateau implements CaseComponent {
             piece = factory.creerPiece("fou", couleurs[k], switchPartieStrategy2);
             cases[0][5][k].setPiece(piece);
             
+            
             piece = factory.creerPiece("reine", couleurs[k], switchPartieStrategy);
             cases[0][3][k].setPiece(piece);
             piece = factory.creerPiece("roi", couleurs[k], switchPartieStrategy);
             cases[0][4][k].setPiece(piece);
         }
-        
     }
 
     /**
@@ -158,6 +159,7 @@ public class Plateau implements CaseComponent {
     public void deplacementPiece(Case caseDepart, Case caseArrivee) {
         Piece piece = caseDepart.getPiece();
         if (piece != null) {
+            piece.setHasMoved(true);
             caseArrivee.setPiece(piece);
             caseDepart.setPiece(null);
         }
@@ -171,7 +173,7 @@ public class Plateau implements CaseComponent {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 8; j++) {
                     if(cases[i][j][k].getAction() instanceof ActionPiece || cases[i][j][k].getAction() instanceof ActionVide){}
-                    else if(cases[i][j][k].getAction() instanceof ActionManger){
+                    else if(cases[i][j][k].getAction() instanceof ActionManger || (cases[i][j][k].getAction() instanceof ActionSpecial && cases[i][j][k].getPiece()==null)){
                         cases[i][j][k].setAction(new ActionPiece(cases[i][j][k]));
                     }else{
                         cases[i][j][k].deselectionner();
@@ -179,7 +181,45 @@ public class Plateau implements CaseComponent {
                 }
             }
         }
-    }    
+    }
+    
+    public void castling(Case caseRoi, Case caseTour){
+        Piece roi = caseRoi.getPiece();
+        Piece tour = caseTour.getPiece();
+
+        int[] indexRoi = getIndexCase(caseRoi);
+        int[] indexTour = getIndexCase(caseTour);
+
+        int direction = Integer.compare(indexTour[1], indexRoi[1]);
+
+        Case caseArriveeRoi = getCase(indexRoi[0], indexRoi[1]+(2*direction), indexRoi[2]);
+        Case caseArriveeTour = getCase(indexRoi[0], indexRoi[1]+direction, indexRoi[2]);
+
+        roi.setHasMoved(true);
+        tour.setHasMoved(true);
+
+        caseArriveeRoi.setPiece(roi);
+        caseRoi.setPiece(null);
+        caseArriveeTour.setPiece(tour);
+        caseTour.setPiece(null);
+
+        deselectionner();
+        Partie.getInstance().tourSuivant();
+    }
+
+    public void promotion(Case casePion, Case casePromotion) {
+        deplacementPiece(casePion, casePromotion);
+        casePromotion.notifyPromotion(casePromotion);
+    }
+
+    public void finPromotion(Case casePromotion,String type) {
+        Piece pion = casePromotion.getPiece();
+        PieceFactoryStandard factory = new PieceFactoryStandard();
+        Piece piecePromue = factory.creerPiece(type, pion.getCouleur(),new StandardSwitchPartieStrategy());
+        casePromotion.setPiece(piecePromue);
+        deselectionner();
+        Partie.getInstance().tourSuivant();
+    }
     
 
 }

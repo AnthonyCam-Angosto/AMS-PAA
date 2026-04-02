@@ -27,7 +27,6 @@ public class Reine extends Piece {
     @Override
     protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
-        Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
 
         for(int i=0;i<2;i++){
             List<Case> line = linePath.getPath(plateau, indexActuel, i, switchPartieStrategy);
@@ -44,29 +43,7 @@ public class Reine extends Piece {
                 }
             }
         }
-        List<Case> diagonaleClassique0 = diagonalPath.getPath(plateau, indexActuel, 0, diagonalSwitchPartie);
-        List<Case> diagonaleClassique1 = diagonalPath.getPath(plateau, indexActuel, 1, diagonalSwitchPartie);
-
-        for(int i=0;i<3;i++){
-            System.out.println("test début getpath "+i);
-            List<Case> line = diagonalPath.getPath(plateau, indexActuel, i, diagonalSwitchPartie);
-
-            if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
-                continue;
-            }
-
-            List<List<Case>> splitLine = diagonalPath.splitLine(line, caseActuelle);
-
-            for (int j = 0; j < 2; j++) {
-                for (Case c : splitLine.get(j)) {
-                    if (c.isEmpty()) {
-                        deplacements.add(c);
-                   } else {
-                        break;
-                   }
-                }
-            }
-        }
+        ajouterDeplacementsDiagonaux(plateau, indexActuel, deplacements);
 
         return deplacements;
     }
@@ -93,6 +70,38 @@ public class Reine extends Piece {
         }
 
 
+        ajouterCapturesDiagonales(plateau, indexActuel, captures);
+
+        return captures;
+    }
+
+    private void ajouterDeplacementsDiagonaux(Plateau plateau, int[] indexActuel, List<Case> deplacements) {
+        Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
+        List<Case> diagonaleClassique0 = diagonalPath.getPath(plateau, indexActuel, 0, diagonalSwitchPartie);
+        List<Case> diagonaleClassique1 = diagonalPath.getPath(plateau, indexActuel, 1, diagonalSwitchPartie);
+
+        for(int i=0;i<3;i++){
+            List<Case> line = diagonalPath.getPath(plateau, indexActuel, i, diagonalSwitchPartie);
+
+            if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
+                continue;
+            }
+
+            List<List<Case>> splitLine = diagonalPath.splitLine(line, caseActuelle);
+
+            for (int j = 0; j < 2; j++) {
+                for (Case c : splitLine.get(j)) {
+                    if (c.isEmpty()) {
+                        deplacements.add(c);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void ajouterCapturesDiagonales(Plateau plateau, int[] indexActuel, List<Case> captures) {
         Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
         List<Case> diagonaleClassique0 = diagonalPath.getPath(plateau, indexActuel, 0, diagonalSwitchPartie);
         List<Case> diagonaleClassique1 = diagonalPath.getPath(plateau, indexActuel, 1, diagonalSwitchPartie);
@@ -117,8 +126,6 @@ public class Reine extends Piece {
                 }
             }
         }
-
-        return captures;
     }
 
     private boolean traverseCroisementMilieu(List<Case> line, Case caseActuelle) {

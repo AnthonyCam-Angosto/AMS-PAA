@@ -27,4 +27,6 @@ public interface CaseObserver {
      * @param c la case concernée
      */
     void onDeselected(Case c);
+
+    void onPromotion(Case c);
 }

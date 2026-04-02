@@ -52,7 +52,7 @@ public class Partie implements PartieSubject {
     public void tourSuivant() {
         tour++;
         Utilisateur joueurActuel=joueurs[tour%3];
-        System.out.println("C'est au joueur " + joueurActuel.getCouleur() + " de jouer.");
+        //System.out.println("C'est au joueur " + joueurActuel.getCouleur() + " de jouer.");
         notifyTourChange(joueurActuel);
     }
 

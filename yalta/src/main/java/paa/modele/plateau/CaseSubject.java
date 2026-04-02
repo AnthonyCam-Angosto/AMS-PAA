@@ -40,4 +40,6 @@ public interface CaseSubject {
      */
     void notifyDeselected();
 
+    void notifyPromotion(Case casePromotion);
+
 }

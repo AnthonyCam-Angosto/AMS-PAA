@@ -11,24 +11,21 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Pion extends Piece {
-    private boolean firstMove=true;
-
     public Pion(Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
         super(1, couleur,switchPartieStrategy);
-    }
-
-    public void setFirstMove(boolean firstMove) {
-        this.firstMove = firstMove;
     }
 
     @Override
     protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
 
-        if (firstMove) {
-            Case c = plateau.getCase(indexActuel[0] + 2, indexActuel[1], indexActuel[2]);
-            if (c.isEmpty()) {
-                deplacements.add(c);
+        if (!hasMoved()) {
+            Case temp=plateau.getCase(indexActuel[0]+1, indexActuel[1], indexActuel[2]);
+            if(temp.isEmpty()){
+                Case c = plateau.getCase(indexActuel[0] + 2, indexActuel[1], indexActuel[2]);
+                if (c.isEmpty()) {
+                    deplacements.add(c);
+                }
             }
         }
 
@@ -109,14 +106,60 @@ public class Pion extends Piece {
         return false;
     }
 
+    /**
+     * Récupère la case de promotion pour la pièce, en fonction de sa position actuelle et des règles de promotion du jeu.
+     * par defaut, aucune promotion n'est disponible, mais les pièces spécifiques peuvent override cette méthode pour implémenter leurs propres règles de promotion.
+     * @param plateau Plateau de jeu
+     * @param indexActuel index de la case actuelle(reference pour trouver la case de promotion)
+     * @return la case de promotion, ou null si aucune promotion n'est disponible
+     */
     @Override
-    protected Case promotion(Plateau plateau, int[] indexActuel) {
-        if(hasChangedPartie(plateau, indexActuel)){
-            if((indexActuel[0]==0 && indexActuel[2]==0) || (indexActuel[0]==3 && indexActuel[2]==1) || (indexActuel[0]==3 && indexActuel[2]==2)){
-                return plateau.getCase(indexActuel[0]+1, indexActuel[1], indexActuel[2]);
+    protected List<Case> specials(Plateau plateau, int[] indexActuel) {
+        boolean changedPartie = hasChangedPartie(plateau, indexActuel);
+        List<Case> destinationsPromotion = new ArrayList<>();
+        Case destinationPromotion = null;
+
+        // La destination spéciale suit la même direction que le déplacement simple du pion.
+        if(!changedPartie){
+            if(indexActuel[0] + 1 < 4){
+                destinationPromotion = plateau.getCase(indexActuel[0] + 1, indexActuel[1], indexActuel[2]);
+            }else{
+                destinationPromotion = switchPartieStrategy.resolve(plateau, indexActuel, 0);
+            }
+        }else if(indexActuel[0] - 1 >= 0){
+            destinationPromotion = plateau.getCase(indexActuel[0] - 1, indexActuel[1], indexActuel[2]);
+        }
+
+        if(destinationPromotion != null && destinationPromotion.isEmpty()){
+            int[] indexDestination = plateau.getIndexCase(destinationPromotion);
+            if(indexDestination != null && changedPartie && indexDestination[0] == 0){
+                destinationsPromotion.add(destinationPromotion);
             }
         }
-        return null;
+
+        // Promotion en capture diagonale (ex: B7 -> A8/C8).
+        if(changedPartie && indexActuel[0] - 1 >= 0){
+            int xCapture = indexActuel[0] - 1;
+            for (int deltaY : new int[]{-1, 1}) {
+                int yCapture = indexActuel[1] + deltaY;
+                if(yCapture < 0 || yCapture > 7){
+                    continue;
+                }
+
+                Case c = plateau.getCase(xCapture, yCapture, indexActuel[2]);
+                if(c.isEmpty() || c.getPiece().getCouleur() == this.getCouleur()){
+                    continue;
+                }
+
+                int[] indexCapture = plateau.getIndexCase(c);
+                if(indexCapture != null && indexCapture[0] == 0){
+                    destinationsPromotion.add(c);
+                }
+            }
+        }
+
+        return destinationsPromotion;
     }
+
 
 }

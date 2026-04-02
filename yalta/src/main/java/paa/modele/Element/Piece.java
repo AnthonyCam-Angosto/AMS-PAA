@@ -4,7 +4,7 @@ import java.util.List;
 
 import paa.controler.ActionDeplacementPossible;
 import paa.controler.ActionManger;
-import paa.controler.ActionPromotion;
+import paa.controler.ActionSpecial;
 import paa.modele.Couleur;
 import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
@@ -19,15 +19,21 @@ public abstract class Piece {
     protected Couleur couleur;
     protected PieceView view;
     protected SwitchPartieStrategy switchPartieStrategy;
+    protected boolean hasMoved;
 
     public Piece(int valeur, Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
         this.valeur = valeur;
         this.couleur = couleur;
         this.switchPartieStrategy = switchPartieStrategy;
+        this.hasMoved = false;
     }
 
     public void createView(PieceView view) {
         this.view = view;
+    }
+
+    public int getValeur() {
+        return valeur;
     }
 
     public PieceView getView() {
@@ -36,6 +42,14 @@ public abstract class Piece {
 
     public Couleur getCouleur() {
         return couleur;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
     /**
@@ -56,21 +70,14 @@ public abstract class Piece {
             c.setAction(new ActionManger(c,caseActuelle));
         }
 
-        Case promotionCase = promotion(plateau, indexActuel);
-        if (promotionCase != null) {
-            promotionCase.setAction(new ActionPromotion(promotionCase,caseActuelle));
+        List<Case> specialCases = specials(plateau, indexActuel);
+        for (Case specialCase : specialCases) {
+            specialCase.setAction(new ActionSpecial(specialCase,caseActuelle));
         }
     } 
 
-    /**
-     * Récupère la case de promotion pour la pièce, en fonction de sa position actuelle et des règles de promotion du jeu.
-     * par defaut, aucune promotion n'est disponible, mais les pièces spécifiques peuvent override cette méthode pour implémenter leurs propres règles de promotion.
-     * @param plateau Plateau de jeu
-     * @param indexActuel index de la case actuelle(reference pour trouver la case de promotion)
-     * @return la case de promotion, ou null si aucune promotion n'est disponible
-     */
-    protected Case promotion(Plateau plateau, int[] indexActuel){
-        return null;
+    protected List<Case> specials(Plateau plateau, int[] indexActuel){
+        return List.of();
     }
 
     /**

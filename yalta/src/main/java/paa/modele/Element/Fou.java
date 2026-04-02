@@ -19,14 +19,12 @@ public class Fou extends Piece {
 
     @Override
     protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
-        System.out.println("Déplacement du Fou depuis la case "+plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]).getId());
         List<Case> deplacements = new ArrayList<>();
         Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
         List<Case> diagonaleClassique0 = diagonalPathStrategy.getPath(plateau, indexActuel, 0, switchPartieStrategy);
         List<Case> diagonaleClassique1 = diagonalPathStrategy.getPath(plateau, indexActuel, 1, switchPartieStrategy);
 
         for(int i=0;i<3;i++){
-            System.out.println("test début getpath "+i);
             List<Case> line = diagonalPathStrategy.getPath(plateau, indexActuel, i, switchPartieStrategy);
 
             if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
