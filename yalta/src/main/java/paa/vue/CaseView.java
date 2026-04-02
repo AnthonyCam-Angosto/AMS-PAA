@@ -4,13 +4,16 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.shape.Polygon;
-import paa.modele.TypeAction;
 import paa.modele.Element.Piece;
+import paa.modele.TypeAction;
 import paa.modele.plateau.Case;
-import paa.modele.plateau.CaseComponent;
 
-public class CaseView extends Polygon implements CaseObserver,CaseComponent {
+public class CaseView extends Polygon implements CaseObserver {
 
+    /**
+     * Met à jour la pièce affichée sur cette case.
+     * @param piece la pièce à afficher
+     */
     public void setPiece(Piece piece) {
         Parent parent = this.getParent();
         if (!(parent instanceof Group group)) {
@@ -57,29 +60,18 @@ public class CaseView extends Polygon implements CaseObserver,CaseComponent {
 
 
     @Override
-    public void mettreAJour() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mettreAJour'");
-    }
-
-
-    @Override
     public void onSelected(TypeAction t) {
-        switch(t) {
-            case DEPLACEMENT:
-                this.setStyle("-fx-fill: rgba(56, 149, 255, 0.42); -fx-stroke: #0b63d8; -fx-stroke-width: 4; -fx-stroke-type: inside;");
-                break;
-            case MANGER:
-                this.setStyle("-fx-fill: rgba(255, 56, 56, 0.42); -fx-stroke: #d80b0b; -fx-stroke-width: 4; -fx-stroke-type: inside;");
-                break;
-            case PROMOTION:
-                this.setStyle("-fx-fill: rgba(255, 255, 56, 0.42); -fx-stroke: #d8d80b; -fx-stroke-width: 4; -fx-stroke-type: inside;");
-                break;
+        switch (t) {
+            case DEPLACEMENT -> this.setStyle("-fx-fill: rgba(56, 149, 255, 0.42); -fx-stroke: #0b63d8; -fx-stroke-width: 4; -fx-stroke-type: inside;");
+            case MANGER -> this.setStyle("-fx-fill: rgba(255, 56, 56, 0.42); -fx-stroke: #d80b0b; -fx-stroke-width: 4; -fx-stroke-type: inside;");
+            case PROMOTION -> this.setStyle("-fx-fill: rgba(255, 255, 56, 0.42); -fx-stroke: #d8d80b; -fx-stroke-width: 4; -fx-stroke-type: inside;");
         }
     }
 
 
-    @Override
+    /**
+     * Désélectionne cette case.
+     */
     public void deselectionner() {
         this.setStyle("");
     }

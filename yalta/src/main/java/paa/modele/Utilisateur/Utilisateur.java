@@ -3,6 +3,9 @@ package paa.modele.Utilisateur;
 import paa.modele.Couleur;
 import paa.modele.PartieObserver;
 
+/**
+ * Représente un utilisateur du jeu, pouvant être un joueur humain ou une intelligence artificielle.
+ */
 public abstract class Utilisateur implements PartieObserver {
     protected boolean tour;
     protected Couleur couleur;
@@ -38,8 +41,17 @@ public abstract class Utilisateur implements PartieObserver {
         this.score += points;
     }
 
-    abstract public void jouer();
-    abstract public void evoluer();
-    abstract public void mat();
-    abstract public void onTourChange(Utilisateur joueur);
+    /**
+     * Permet à l'utilisateur de jouer un coup.
+     * utiliser seulement par les IA,les joeurs utilise leur interface pour jouer, et cette méthode est appelé par l'interface pour les IA
+     */
+    public void jouer(){}
+
+
+    /**
+     * Permet a la partie de signaler à l'utilisateur qu'il est en échec, c'est à dire que son roi est menacé et doit être protégé au prochain coup.
+     * utiliser seulement par les IA,les joeurs utilise leur interface pour jouer, et cette méthode est appelé par l'interface pour les IA
+    */
+    public void echec(){}
+
 }

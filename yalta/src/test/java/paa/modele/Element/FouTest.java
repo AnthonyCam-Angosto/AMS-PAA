@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FouCroisementTest {
+class FouTest {
     private Plateau plateau;
 
     @BeforeEach
@@ -115,26 +115,57 @@ class FouCroisementTest {
     @Test
     void fouJ6DoitAvoirTroisiemeDiagonale() {
         // Place un fou sur J6
-        String[] case1diago={"L8", "K7", "J6", "I5", "E9", "F10", "G11", "H12"};
-        String[] case3diago={"D8", "I7", "J6", "K5", "L9"};
-        String[] case2diago={"L8","K7","J6","I5","D4","C3","B2","A1"};
+        String[] case1diago={"L8", "K7","I5", "E9", "F10", "G11", "H12"};
+        String[] case2diago={"D8", "I7", "K5", "L9"};
+        String[] case3diago={"L8","K7","I5","D4","C3","B2","A1"};
+        int sizeall = case1diago.length + case2diago.length + case3diago.length;
         Case caseJ6 = plateau.getCaseById("J6");
         Fou fou = new Fou(Couleur.BLANC, new DiagonalSwitchPartieStrategy());
         caseJ6.setPiece(fou);
         int[] index = plateau.getIndexCase(caseJ6);
         List<Case> deplacements = fou.deplacement(plateau, index);
+        System.out.println("deplacements : "+deplacements.stream().map(Case::getId).toList());
+        System.out.println("sizeall : "+sizeall+" deplacements : "+deplacements.size());
         // On attend que la 3e diagonale (croisement) soit présente, donc que le fou puisse atteindre I5
-        for (Case c : deplacements) {
-            if (java.util.Arrays.asList(case1diago).contains(c.getId())) {
-                assertTrue(true, "Le fou doit pouvoir se déplacer sur la première diagonale classique");
-            } else if (java.util.Arrays.asList(case2diago).contains(c.getId())) {
-                assertTrue(true, "Le fou doit pouvoir se déplacer sur la deuxième diagonale classique");
-            } else if (java.util.Arrays.asList(case3diago).contains(c.getId())) {
-                assertTrue(true, "Le fou doit pouvoir se déplacer sur la troisième diagonale du croisement central");
-            } else {
-                fail("Le fou ne doit pas pouvoir se déplacer sur d'autres cases que les diagonales attendues :"+c.getId());
-            }
+        assertTrue(sizeall==deplacements.size(), "Le fou doit pouvoir se déplacer sur les 3 diagonales sans doublons");
+        for(String id :case1diago){
+            assertTrue(deplacements.stream().anyMatch(c -> c.getId().equals(id)), "Le fou doit pouvoir se déplacer sur la première diagonale classique");
+        }
+        for( String id :case2diago){
+            assertTrue(deplacements.stream().anyMatch(c -> c.getId().equals(id)), "Le fou doit pouvoir se déplacer sur la deuxième diagonale classique");
+        }
+        for(String id :case3diago){
+            System.out.println("test fin getpath : "+id);
+            assertTrue(deplacements.stream().anyMatch(c -> c.getId().equals(id)), "Le fou doit pouvoir se déplacer sur la troisième diagonale du croisement central");
+        }
+    }
 
+    @Test
+    void fouK11DoitAvoirTroisiemeDiagonale() {
+        // Place un fou sur K11
+        String[] case1diago={"L12", "J10", "I9", "D5", "C6", "B7", "A8"};
+        String[] case2diago={"J12","L10"};
+        String[] case3diago={"L12","J10","I9","E4","F3","G2","H1"};
+        int sizeall = case1diago.length + case2diago.length + case3diago.length;
+
+        Case caseK11 = plateau.getCaseById("K11");
+        Fou fou = new Fou(Couleur.BLANC, new DiagonalSwitchPartieStrategy());
+        caseK11.setPiece(fou);
+        int[] index = plateau.getIndexCase(caseK11);
+        List<Case> deplacements = fou.deplacement(plateau, index);
+        System.out.println("sizeall : "+sizeall+" deplacements : "+deplacements.size());
+
+        //System.out.println("deplacements : "+deplacements.stream().map(Case::getId).toList());
+        // On attend que la 3e diagonale (croisement) soit présente, donc que le fou puisse se déplacer sur F6
+        assertTrue(sizeall==deplacements.size(), "Le fou doit pouvoir se déplacer sur les 3 diagonales sans doublons");
+        for(String id :case1diago){
+            assertTrue(deplacements.stream().anyMatch(c -> c.getId().equals(id)), "Le fou doit pouvoir se déplacer sur la première diagonale classique");
+        }
+        for( String id :case2diago){
+            assertTrue(deplacements.stream().anyMatch(c -> c.getId().equals(id)), "Le fou doit pouvoir se déplacer sur la deuxième diagonale classique");
+        }
+        for(String id :case3diago){
+            assertTrue(deplacements.stream().anyMatch(c -> c.getId().equals(id)), "Le fou doit pouvoir se déplacer sur la troisième diagonale du croisement central");
         }
     }
 }

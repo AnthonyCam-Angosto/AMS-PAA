@@ -70,7 +70,13 @@ public class Pion extends Piece {
             for (int i : range) {
                 if(indexActuel[1]+i<0 || indexActuel[1]+i>7) continue;
 
-                Case c = switchPartieStrategy.resolve(plateau, indexActuel, i); //TODO manque le millieu du plateau changer de plusieur partie
+                Case c = switchPartieStrategy.resolve(plateau, indexActuel, i);
+                if(c.getPiece()==null) continue;
+                if (c.getPiece().couleur != this.couleur) {
+                    captures.add(c);
+                }
+                c=switchPartieStrategy.resolveSpecial(plateau, indexActuel, i);
+                System.out.println("c special "+c.getId());
                 if(c.getPiece()==null) continue;
                 if (c.getPiece().couleur != this.couleur) {
                     captures.add(c);

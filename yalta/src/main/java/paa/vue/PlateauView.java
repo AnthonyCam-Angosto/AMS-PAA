@@ -11,11 +11,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import paa.modele.plateau.CaseComponent;
 import paa.modele.plateau.Plateau;
 
-
-public class PlateauView extends Group implements CaseComponent, LoadFxml {
+/**
+ * Représente la vue du plateau de jeu.
+ */
+public class PlateauView extends Group implements LoadFxml {
     private static final String BOARD_FXML_PATH = "/paa/plateau.fxml";
 
 
@@ -45,6 +46,9 @@ public class PlateauView extends Group implements CaseComponent, LoadFxml {
         }
     }
 
+    /**
+     * Ajoute les id des cases en tant que texte centré sur chaque case du plateau, pour faciliter le développement et les tests.
+     */
     private void addIndexTexts() {
         List<Text> labels = new ArrayList<>();
 
@@ -55,6 +59,10 @@ public class PlateauView extends Group implements CaseComponent, LoadFxml {
         getChildren().addAll(labels);
     }
 
+    /**
+     * Récupère la liste des CaseView présentes dans les enfants de ce PlateauView.
+     * @return la liste des CaseView
+     */
     private List<CaseView> getCaseViews() {
         List<CaseView> polygons = new ArrayList<>();
         for (Node node : getChildren()) {
@@ -65,6 +73,13 @@ public class PlateauView extends Group implements CaseComponent, LoadFxml {
         return polygons;
     }
 
+    /**
+     * Crée un objet Text pour afficher l'index d'une case, centré sur la case elle-même.
+     * @param label le texte à afficher (généralement l'ID de la case)
+     * @param points les coordonnées des sommets de la case, utilisées pour calculer le centre de la case
+     * @param scale un facteur de mise à l'échelle pour ajuster la taille du texte en fonction de la taille de la case
+     * @return un objet Text configuré pour afficher l'index de la case
+     */
     private Text createIndexText(String label, List<Double> points, double scale) {
         double centerX = 0.0;
         double centerY = 0.0;
@@ -93,15 +108,9 @@ public class PlateauView extends Group implements CaseComponent, LoadFxml {
         return text;
     }
 
-    public CaseView getCaseViewById(String id) {
-        for (CaseView caseView : getCaseViews()) {
-            if (caseView.getId().equals(id)) {
-                return caseView;
-            }
-        }
-        return null; // Retourne null si aucune CaseView avec l'ID spécifié n'est trouvée
-    }
-
+    /**
+     * Initialise les observateurs pour chaque case du plateau.
+     */
     private void initObservers() {
         for (CaseView caseView : getCaseViews()) {
             String id = caseView.getId();
@@ -114,18 +123,5 @@ public class PlateauView extends Group implements CaseComponent, LoadFxml {
                 }
             }
         }
-    }
-
-    @Override
-    public void deselectionner() {
-            for (CaseView caseView : getCaseViews()) {
-                caseView.deselectionner();
-            }
-    }
-
-    @Override
-    public void mettreAJour() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mettreAJour'");
     }
 }

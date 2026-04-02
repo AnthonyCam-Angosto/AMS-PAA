@@ -51,5 +51,32 @@ public class DiagonalSwitchPartieStrategy  implements SwitchPartieStrategy {
         }
         return plateau.getCase(x, y, z);
     }
-    
+
+    @Override
+    public Case resolveSpecial(Plateau plateau, int[] indexCase, int delta) {
+        int x = indexCase[0];
+        int y;
+        int z;
+        switch (indexCase[2]) {
+            case 0 -> {
+                y = indexCase[1] + delta;
+                z = 1;
+            }
+            case 1 -> {
+                y = 6-indexCase[1] + delta;
+                z = 0;
+            }
+            case 2 -> {
+                y = 7-indexCase[1] + delta;
+                z = 0;
+            }
+            default -> {
+                return null;
+            }
+        }
+        if (x < 0 || x >= 4 || y < 0 || y >= 8 || z < 0 || z >= 3) {
+            return null;
+        }
+        return plateau.getCase(x, y, z);
+    }
 }

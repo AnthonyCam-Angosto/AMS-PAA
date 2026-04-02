@@ -33,8 +33,6 @@ public class Fou extends Piece {
                 continue;
             }
 
-            System.out.println("test fin getpath "+i+" : "+line);
-
             List<List<Case>> splitLine = diagonalPathStrategy.splitLine(line, caseActuelle);
 
             for (int j = 0; j < 2; j++) {
@@ -64,7 +62,6 @@ public class Fou extends Piece {
                 continue;
             }
 
-
             List<List<Case>> splitLine = diagonalPathStrategy.splitLine(line, caseActuelle);
 
             for (int j = 0; j < 2; j++) {
@@ -81,18 +78,13 @@ public class Fou extends Piece {
         return captures;
     }
 
-    @Override
-    protected Case promotion(Plateau plateau, int[] indexActuel) {
-        return null;
-    }
-
 
     private boolean traverseCroisementMilieu(List<Case> line, Case caseActuelle) {
         line.add(caseActuelle);
         java.util.Set<String> pivots = new java.util.HashSet<>();
         for (Case c : line) {
             String id = c.getId();
-            if ("D4".equals(id) || "D5".equals(id) || "I5".equals(id) || "E9".equals(id) || "E4".equals(id) || "E10".equals(id)) {
+            if ("D4".equals(id) || "D5".equals(id) || "I5".equals(id) || "E9".equals(id) || "E4".equals(id) || "E10".equals(id) || "I9".equals(id)) {
                 pivots.add(id);
             }
         }

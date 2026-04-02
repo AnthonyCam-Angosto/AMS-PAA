@@ -8,6 +8,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import paa.modele.Couleur;
 
+/**
+ * Représente la vue d'une pièce du plateau.
+ */
 public class PieceView extends StackPane implements LoadFxml {
     private ImageView icon;
 
@@ -23,6 +26,10 @@ public class PieceView extends StackPane implements LoadFxml {
         }
     }
 
+    /**
+     * Ajuste la taille de l'icône de la pièce.
+     * @param size la nouvelle taille (largeur et hauteur) de l'icône
+     */
     public void setPieceSize(double size) {
         if (icon == null) {
             return;

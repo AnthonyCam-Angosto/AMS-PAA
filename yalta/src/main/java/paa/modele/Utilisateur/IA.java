@@ -15,17 +15,10 @@ public class IA extends Utilisateur {
         throw new UnsupportedOperationException("Unimplemented method 'jouer'");
     }
 
-
     @Override
-    public void evoluer() {
+    public void echec() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'evoluer'");
-    }
-
-    @Override
-    public void mat() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mat'");
+        throw new UnsupportedOperationException("Unimplemented method 'echec'");
     }
 
     @Override

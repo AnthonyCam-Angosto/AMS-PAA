@@ -23,10 +23,5 @@ public class Cavalier extends Piece {
         // Implémentation de la capture du cavalier
         return List.of();
     }
-
-    @Override
-    protected Case promotion(Plateau plateau, int[] indexActuel) {
-        return null;
-    }
     
 }

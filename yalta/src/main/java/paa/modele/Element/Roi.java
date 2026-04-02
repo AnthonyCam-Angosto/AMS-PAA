@@ -70,8 +70,4 @@ public class Roi extends Piece {
         return captures;
     }
 
-    @Override
-    protected Case promotion(Plateau plateau, int[] indexActuel) {
-        return null;
-    }
 }

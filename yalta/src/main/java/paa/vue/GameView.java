@@ -8,6 +8,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
+/**
+ * Représente la vue principale du jeu.
+ */
 public class GameView extends VBox{
     private static final double BOARD_BASE_WIDTH = 960.0;
     private static final double BOARD_BASE_HEIGHT = 831.3843876330611;
@@ -53,6 +56,9 @@ public class GameView extends VBox{
     }
 
 
+    /**
+     * Redimensionne le plateau en fonction de la taille de la vue.
+     */
     public void resizeBoard() {
         if (plateauView == null || boardContainer == null) {
             return;

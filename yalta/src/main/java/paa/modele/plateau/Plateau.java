@@ -1,7 +1,5 @@
 package paa.modele.plateau;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import paa.controler.ActionManger;
 import paa.controler.ActionPiece;
@@ -14,6 +12,10 @@ import paa.modele.deplacement.StandardSwitchPartieStrategy;
 import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.Partie;
 
+/**
+ * Représente le plateau de jeu, composé de 3 parties de 4x8 cases chacune, et gère les pièces et les déplacements sur le plateau.
+ * Le plateau est implémenté en tant que singleton pour garantir qu'il n'y ait qu'une seule instance de plateau dans le jeu.
+ */
 public class Plateau implements CaseComponent {
     private final Case[][][] cases;
 
@@ -26,22 +28,10 @@ public class Plateau implements CaseComponent {
         }
     }
 
-    private void printCases() {
-        for (int k = 0; k < 3; k++) {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if(cases[i][j][k] != null){
-                        System.out.print(cases[i][j][k].getId() + " ");
-                    }else{
-                        System.out.print("null ");
-                    }
-                }
-                System.out.println();
-            }
-            System.out.println();
-        }
-    }
-
+    /**
+     * Retourne l'instance unique du plateau de jeu, en la créant si elle n'existe pas encore.
+     * @return L'instance du plateau de jeu
+     */
     public static Plateau getInstance() {
         if (instance == null) {
             instance = new Plateau();
@@ -49,7 +39,10 @@ public class Plateau implements CaseComponent {
         return instance;
     }
 
-    //plateau1
+    /**
+     * Initialise les cases d'une partie des 3 parties du plateau
+     * @param partie Numéro de la partie à initialiser (1, 2 ou 3)
+     */
     private void initCases(int partie) {
         String lettre = switch (partie) {
             case 1 -> "ABCDEFGH";
@@ -77,6 +70,13 @@ public class Plateau implements CaseComponent {
         }
     }
 
+    /**
+     * Récupère la case du plateau correspondant aux coordonnées x, y et z spécifiées.
+     * @param x Coordonnée x de la case (0 à 3)
+     * @param y Coordonnée y de la case (0 à 7)
+     * @param z Numéro de la partie (0 à 2)
+     * @return La case correspondante aux coordonnées spécifiées, ou null si les coordonnées sont invalides
+     */
     public Case getCase(int x, int y, int z) {
         return cases[x][y][z];
     }
@@ -94,6 +94,11 @@ public class Plateau implements CaseComponent {
         return null;
     }
 
+    /**
+     * Récupère la case du plateau correspondant à l'identifiant spécifié.
+     * @param id Identifiant de la case à récupérer
+     * @return La case correspondante à l'identifiant spécifié, ou null si aucune case ne correspond à cet identifiant
+     */
     public Case getCaseById(String id) {
         for (int k = 0; k < 3; k++) {
             for (int i = 0; i < 4; i++) {
@@ -108,6 +113,9 @@ public class Plateau implements CaseComponent {
     }
 
 
+    /**
+     * Crée les pièces sur le plateau pour chaque partie.
+     */
     public void createPieces(){
         PieceFactoryStandard factory = new PieceFactoryStandard();
         Couleur[] couleurs = Partie.getInstance().getOrdre();
@@ -142,6 +150,11 @@ public class Plateau implements CaseComponent {
         
     }
 
+    /**
+     * Déplace une pièce d'une case de départ vers une case d'arrivée, en mettant à jour les pièces sur les cases et en gérant les tours de jeu.
+     * @param caseDepart Case de départ
+     * @param caseArrivee Case d'arrivée
+     */
     public void deplacementPiece(Case caseDepart, Case caseArrivee) {
         Piece piece = caseDepart.getPiece();
         if (piece != null) {
@@ -157,9 +170,8 @@ public class Plateau implements CaseComponent {
         for (int k = 0; k < 3; k++) {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if(cases[i][j][k].getAction() instanceof ActionPiece || cases[i][j][k].getAction() instanceof ActionVide){
-                        continue;
-                    }else if(cases[i][j][k].getAction() instanceof ActionManger){
+                    if(cases[i][j][k].getAction() instanceof ActionPiece || cases[i][j][k].getAction() instanceof ActionVide){}
+                    else if(cases[i][j][k].getAction() instanceof ActionManger){
                         cases[i][j][k].setAction(new ActionPiece(cases[i][j][k]));
                     }else{
                         cases[i][j][k].deselectionner();
@@ -167,14 +179,7 @@ public class Plateau implements CaseComponent {
                 }
             }
         }
-    }
-
-
-    @Override
-    public void mettreAJour() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mettreAJour'");
-    }     
+    }    
     
 
 }

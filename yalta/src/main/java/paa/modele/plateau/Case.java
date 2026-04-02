@@ -10,6 +10,9 @@ import paa.modele.TypeAction;
 import paa.modele.Element.Piece;
 import paa.vue.CaseObserver;
 
+/**
+ * Représente une case du plateau de jeu
+ */
 public class Case implements CaseComponent, CaseSubject {
     private String id;
     private ActionCase action;
@@ -39,6 +42,10 @@ public class Case implements CaseComponent, CaseSubject {
         return piece == null;
     }
 
+    /**
+     * Place une pièce sur la case et met à jour l'action en conséquence, puis notifie les observateurs de la vue du changement de pièce.
+     * @param piece
+     */
     public void setPiece(Piece piece) {
         this.piece = piece;
         if(piece != null){
@@ -50,27 +57,22 @@ public class Case implements CaseComponent, CaseSubject {
 
     }
 
+    /**
+     * Met à jour l'action de la case en fonction de l'action passée en paramètre, 
+     * puis notifie les observateurs de la vue du changement d'action et de la sélection/désélection de la case en fonction du type d'action.
+     * @param action L'action à assigner à la case
+     */
     public void setAction(ActionCase action) {
         this.action = action;
         notifyActionChanged();
         switch (action.getClass().getSimpleName()) {
-            case "ActionManger":
-                notifySelected(TypeAction.MANGER);
-                break;
-            case "ActionDeplacementPossible":
-                notifySelected(TypeAction.DEPLACEMENT);
-                break;
-            default:
-                notifyDeselected();
-                break;
+            case "ActionManger" -> notifySelected(TypeAction.MANGER);
+            case "ActionDeplacementPossible" -> notifySelected(TypeAction.DEPLACEMENT);
+            case "ActionPromotion" -> notifySelected(TypeAction.PROMOTION);
+            default -> notifyDeselected();
         }
     }
-
     
-    @Override
-    public void mettreAJour() {
-        throw new UnsupportedOperationException("Unimplemented method 'mettreAJour'");
-    }
 
     @Override
     public void ajouterObservateur(CaseObserver observer) {
@@ -116,6 +118,7 @@ public class Case implements CaseComponent, CaseSubject {
         this.setAction(new ActionVide(this));
     }
 
+    @Override
     public String toString() {
         return id;
     }

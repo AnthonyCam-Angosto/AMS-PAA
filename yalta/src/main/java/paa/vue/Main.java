@@ -7,7 +7,10 @@ import javafx.scene.layout.VBox;
 import paa.App;
 import paa.controler.MenuControlleur;
 
-public class Main extends VBox {
+/**
+ * Représente la vue de d'accueil de l'application.
+ */
+public class Main extends VBox implements LoadFxml {
 
     private static final String MENU_FXML_PATH = "/paa/main.fxml";
 
@@ -18,7 +21,8 @@ public class Main extends VBox {
         loadFromFxml();
     }
 
-    private void loadFromFxml() {
+    @Override
+    public void loadFromFxml() {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource(MENU_FXML_PATH));
         loader.setRoot(this);
         loader.setController(new MenuControlleur(this));

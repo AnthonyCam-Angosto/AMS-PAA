@@ -12,13 +12,10 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Reine extends Piece {
-    private SwitchPartieStrategy diagonalSwitchPartie;
+    private final SwitchPartieStrategy diagonalSwitchPartie;
 
-    private PathStrategy linePath;
-    private PathStrategy diagonalPath;
-
-
-
+    private final PathStrategy linePath;
+    private final PathStrategy diagonalPath;
 
     public Reine(Couleur couleur,SwitchPartieStrategy switchPartieStrategy,SwitchPartieStrategy diagonalSwitchPartie) {
         super(9, couleur,switchPartieStrategy);
@@ -47,13 +44,14 @@ public class Reine extends Piece {
                 }
             }
         }
+        List<Case> diagonaleClassique0 = diagonalPath.getPath(plateau, indexActuel, 0, diagonalSwitchPartie);
+        List<Case> diagonaleClassique1 = diagonalPath.getPath(plateau, indexActuel, 1, diagonalSwitchPartie);
 
         for(int i=0;i<3;i++){
+            System.out.println("test début getpath "+i);
             List<Case> line = diagonalPath.getPath(plateau, indexActuel, i, diagonalSwitchPartie);
-            if (!line.contains(caseActuelle)) {
-                continue;
-            }
-            if (i == 2 && !traverseCroisementMilieu(line)) {
+
+            if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
                 continue;
             }
 
@@ -96,15 +94,16 @@ public class Reine extends Piece {
 
 
         Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
+        List<Case> diagonaleClassique0 = diagonalPath.getPath(plateau, indexActuel, 0, diagonalSwitchPartie);
+        List<Case> diagonaleClassique1 = diagonalPath.getPath(plateau, indexActuel, 1, diagonalSwitchPartie);
 
         for(int i=0;i<3;i++){
             List<Case> line = diagonalPath.getPath(plateau, indexActuel, i, diagonalSwitchPartie);
-            if (!line.contains(caseActuelle)) {
+
+            if (i == 2 && !(traverseCroisementMilieu(diagonaleClassique1, caseActuelle)||traverseCroisementMilieu(diagonaleClassique0, caseActuelle))) {
                 continue;
             }
-            if (i == 2 && !traverseCroisementMilieu(line)) {
-                continue;
-            }
+
             List<List<Case>> splitLine = diagonalPath.splitLine(line, caseActuelle);
 
             for (int j = 0; j < 2; j++) {
@@ -118,22 +117,20 @@ public class Reine extends Piece {
                 }
             }
         }
+
         return captures;
     }
 
-    @Override
-    protected Case promotion(Plateau plateau, int[] indexActuel) {
-        return null;
-    }
-
-    private boolean traverseCroisementMilieu(List<Case> line) {
+    private boolean traverseCroisementMilieu(List<Case> line, Case caseActuelle) {
+        line.add(caseActuelle);
+        java.util.Set<String> pivots = new java.util.HashSet<>();
         for (Case c : line) {
             String id = c.getId();
-            if ("D4".equals(id) || "E4".equals(id) || "D5".equals(id) || "I5".equals(id)||"I9".equals(id)||"E9".equals(id)) {
-                return true;
+            if ("D4".equals(id) || "D5".equals(id) || "I5".equals(id) || "E9".equals(id) || "E4".equals(id) || "E10".equals(id) || "I9".equals(id)) {
+                pivots.add(id);
             }
         }
-        return false;
+        return pivots.size() >= 2;
     }
     
 }
