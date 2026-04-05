@@ -23,4 +23,11 @@ public interface PartieSubject {
      * @param joueur le joueur dont c'est le tour
      */
     void notifyTourChange(Utilisateur joueur);
+
+    /**
+     * Notifie tous les observateurs que la partie est terminee.
+     * @param perdant le joueur declare perdant
+     * @param typeFin le type de fin de partie
+     */
+    void notifyPartieFinie(Utilisateur perdant, TypeFin typeFin);
 }

@@ -5,17 +5,17 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root type="VBox" alignment="CENTER" spacing="16" style="-fx-background-color: linear-gradient(to bottom, #f3f3ec, #d9dfc8); -fx-background-radius: 12; -fx-padding: 18;" xmlns:fx="http://javafx.com/fxml">
+<fx:root type="VBox" alignment="CENTER" spacing="16" style="-fx-background-color: linear-gradient(to bottom, #192340, #0f1829); -fx-background-radius: 12; -fx-padding: 18; -fx-border-color: #4da6ff; -fx-border-width: 2; -fx-border-radius: 12;" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <Label fx:id="titleLabel" text="Promotion" style="-fx-font-family: 'Consolas'; -fx-font-size: 24; -fx-font-weight: bold;" />
-        <Label fx:id="subtitleLabel" text="Choisissez une piece" style="-fx-font-family: 'Consolas'; -fx-font-size: 14;" />
+        <Label fx:id="titleLabel" text="Promotion du Pion" style="-fx-font-family: 'Consolas'; -fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #4da6ff;" />
+        <Label fx:id="subtitleLabel" text="Choisissez une pièce" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-text-fill: #b8c5d6;" />
 
         <HBox alignment="CENTER" spacing="10">
             <children>
-                <Button fx:id="queenButton" prefWidth="110" prefHeight="40" text="Reine" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
-                <Button fx:id="rookButton" prefWidth="110" prefHeight="40" text="Tour" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
-                <Button fx:id="bishopButton" prefWidth="110" prefHeight="40" text="Fou" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
-                <Button fx:id="knightButton" prefWidth="110" prefHeight="40" text="Cavalier" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold;" />
+                <Button fx:id="queenButton" prefWidth="110" prefHeight="40" text="Reine" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: linear-gradient(to bottom, #4da6ff, #2d7fd1); -fx-text-fill: #ffffff; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                <Button fx:id="rookButton" prefWidth="110" prefHeight="40" text="Tour" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: linear-gradient(to bottom, #4da6ff, #2d7fd1); -fx-text-fill: #ffffff; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                <Button fx:id="bishopButton" prefWidth="110" prefHeight="40" text="Fou" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: linear-gradient(to bottom, #4da6ff, #2d7fd1); -fx-text-fill: #ffffff; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                <Button fx:id="knightButton" prefWidth="110" prefHeight="40" text="Cavalier" style="-fx-font-family: 'Consolas'; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: linear-gradient(to bottom, #4da6ff, #2d7fd1); -fx-text-fill: #ffffff; -fx-border-radius: 6; -fx-background-radius: 6;" />
             </children>
         </HBox>
     </children>

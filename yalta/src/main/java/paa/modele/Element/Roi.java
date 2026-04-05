@@ -15,7 +15,7 @@ public class Roi extends Piece {
     }
 
     @Override
-    protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
+    public List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
 
         for(int i=-1;i<=1;i++){
@@ -43,7 +43,7 @@ public class Roi extends Piece {
     }
 
     @Override
-    protected List<Case> manger(Plateau plateau, int[] indexActuel) {
+    public List<Case> manger(Plateau plateau, int[] indexActuel) {
         List<Case> captures = new ArrayList<>();
 
         for(int i=-1;i<=1;i++){
@@ -77,7 +77,7 @@ public class Roi extends Piece {
      * @return la liste des cases de roque possibles
      */
     @Override
-    protected List<Case> specials(Plateau plateau, int[] indexActuel) {
+    public List<Case> specials(Plateau plateau, int[] indexActuel) {
         List<Case> roquesPossibles = new ArrayList<>();
         Case caseRoi = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
         if (!(caseRoi.getPiece() instanceof Roi roi) || roi.hasMoved()) {

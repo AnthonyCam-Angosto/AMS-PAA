@@ -26,7 +26,7 @@ public class Cavalier extends Piece {
     }
 
     @Override
-    protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
+    public List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
         for (int[] position : POSITIONS_CAVALIER) {
             ajouterCoupCavalier(plateau, indexActuel, position[0], position[1], deplacements, false);
@@ -35,7 +35,7 @@ public class Cavalier extends Piece {
     }
 
     @Override
-    protected List<Case> manger(Plateau plateau, int[] indexActuel) {
+    public List<Case> manger(Plateau plateau, int[] indexActuel) {
         List<Case> captures = new ArrayList<>();
         for (int[] position : POSITIONS_CAVALIER) {
             ajouterCoupCavalier(plateau, indexActuel, position[0], position[1], captures, true);

@@ -10,11 +10,13 @@ public abstract class Utilisateur implements PartieObserver {
     protected boolean tour;
     protected Couleur couleur;
     protected int score;
+    protected boolean echec;
 
     public Utilisateur(Couleur couleur) {
         this.couleur = couleur;
         this.score = 0;
         this.tour = false;
+        this.echec = false;
     }
 
     public boolean isTour() {
@@ -39,6 +41,14 @@ public abstract class Utilisateur implements PartieObserver {
 
     public void updateScore(int points) {
         this.score += points;
+    }
+
+    public boolean isEchec() {
+        return echec;
+    }
+
+    public void setEchec(boolean echec) {
+        this.echec = echec;
     }
 
     /**

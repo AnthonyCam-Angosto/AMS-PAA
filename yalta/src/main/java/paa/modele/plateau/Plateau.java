@@ -1,6 +1,8 @@
 package paa.modele.plateau;
 
 
+import java.util.List;
+
 import paa.controler.ActionManger;
 import paa.controler.ActionPiece;
 import paa.controler.ActionSpecial;
@@ -182,7 +184,12 @@ public class Plateau implements CaseComponent {
             }
         }
     }
-    
+
+    /**
+     * Effectue le roque en déplaçant le roi et la tour concernés, en mettant à jour les pièces sur les cases et changeant les tours de jeu.
+     * @param caseRoi Case du roi à déplacer
+     * @param caseTour Case de la tour à déplacer
+     */
     public void castling(Case caseRoi, Case caseTour){
         Piece roi = caseRoi.getPiece();
         Piece tour = caseTour.getPiece();
@@ -207,11 +214,21 @@ public class Plateau implements CaseComponent {
         Partie.getInstance().tourSuivant();
     }
 
+    /**
+     * Effectue la promotion d'un pion en déplaçant le pion vers la case de promotion, en mettant à jour les pièces sur les cases et en gérant les tours de jeu.
+     * @param casePion Case du pion à promouvoir
+     * @param casePromotion Case de promotion vers laquelle déplacer le pion
+     */
     public void promotion(Case casePion, Case casePromotion) {
         deplacementPiece(casePion, casePromotion);
         casePromotion.notifyPromotion(casePromotion);
     }
 
+    /**
+     * Effectue la fin de la promotion en remplaçant le pion promu par la pièce choisie par le joueur, en mettant à jour les pièces sur les cases et en gérant les tours de jeu.
+     * @param casePromotion Case de promotion où le pion a été déplacé
+     * @param type Type de pièce choisie pour la promotion (ex: "reine", "tour", "fou", "cavalier")
+     */
     public void finPromotion(Case casePromotion,String type) {
         Piece pion = casePromotion.getPiece();
         PieceFactoryStandard factory = new PieceFactoryStandard();
@@ -219,6 +236,24 @@ public class Plateau implements CaseComponent {
         casePromotion.setPiece(piecePromue);
         deselectionner();
         Partie.getInstance().tourSuivant();
+    }
+
+    /**
+     * Récupère une liste de toutes les cases du plateau qui contiennent une pièce.
+     * @return Une liste de toutes les cases du plateau qui contiennent une pièce
+     */
+    public List<Case> getAllCasePiece(){
+        List<Case> casesPiece = new java.util.ArrayList<>();
+        for (int k = 0; k < 3; k++) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (!cases[i][j][k].isEmpty()) {
+                        casesPiece.add(cases[i][j][k]);
+                    }
+                }
+            }
+        }
+        return casesPiece;
     }
     
 

@@ -20,7 +20,7 @@ public class Tour extends Piece {
     }
 
     @Override
-    protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
+    public List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
 
         for(int i=0;i<2;i++){
@@ -42,7 +42,7 @@ public class Tour extends Piece {
     }
 
     @Override
-    protected List<Case> manger(Plateau plateau, int[] indexActuel) {
+    public List<Case> manger(Plateau plateau, int[] indexActuel) {
         List<Case> captures = new ArrayList<>();
 
         for(int i=0;i<2;i++){

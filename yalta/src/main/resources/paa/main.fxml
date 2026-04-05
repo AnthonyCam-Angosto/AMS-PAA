@@ -4,15 +4,35 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 
-<fx:root type="VBox" alignment="CENTER" spacing="28" style="-fx-background-color: linear-gradient(to bottom, #f3f3ec, #d9dfc8);" xmlns:fx="http://javafx.com/fxml">
+<fx:root type="VBox" alignment="CENTER" spacing="40" style="-fx-background-color: linear-gradient(to bottom, #0a0e27, #1a1f3a);" xmlns:fx="http://javafx.com/fxml">
     <children>
-        <Label text="Echecs Yalta" style="-fx-font-family: 'Consolas'; -fx-font-size: 42; -fx-font-weight: bold;" />
-
-        <VBox alignment="CENTER" spacing="12">
-            <Label text="Nombre de joueurs :" style="-fx-font-family: 'Consolas'; -fx-font-size: 18;" />
-            <Spinner fx:id="playerCountSpinner" editable="false" prefWidth="120" />
+        <!-- Title Section -->
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="♔ ECHECS YALTA ♔" style="-fx-font-family: 'Consolas'; -fx-font-size: 48; -fx-font-weight: bold; -fx-text-fill: #4da6ff;" />
+            <Label text="Variante 3 joueurs" style="-fx-font-family: 'Consolas'; -fx-font-size: 16; -fx-text-fill: #9db4d4;" />
         </VBox>
-        <Button fx:id="playButton" prefHeight="48" prefWidth="260" text="Lancer le jeu" style="-fx-font-family: 'Consolas'; -fx-font-size: 18; -fx-font-weight: bold;" onAction="#handleCellClick" />
+
+        <!-- Separator Line -->
+        <VBox prefHeight="2" style="-fx-background-color: linear-gradient(to right, transparent, #4da6ff, transparent); -fx-padding: 0 40 0 40;" />
+
+        <!-- Player Count Section -->
+        <VBox alignment="CENTER" spacing="16" style="-fx-padding: 32 48 32 48; -fx-background-color: rgba(25, 35, 60, 0.6); -fx-border-radius: 12; -fx-border-color: #4da6ff; -fx-border-width: 2; -fx-background-radius: 12;">
+            <Label text="Nombre de joueurs" style="-fx-font-family: 'Consolas'; -fx-font-size: 18; -fx-text-fill: #e0e6f0; -fx-font-weight: bold;" />
+            <Spinner fx:id="playerCountSpinner" editable="false" prefWidth="140" style="-fx-font-family: 'Consolas'; -fx-font-size: 16; -fx-padding: 8 12 8 12;" />
+            <Label text="(Limité à 3)" style="-fx-font-family: 'Consolas'; -fx-font-size: 12; -fx-text-fill: #7a8ba8;" />
+        </VBox>
+
+        <!-- Play Button -->
+        <Button fx:id="playButton" prefHeight="56" prefWidth="280" text="LANCER LE JEU" 
+            style="-fx-font-family: 'Consolas'; -fx-font-size: 20; -fx-font-weight: bold; -fx-padding: 16 32 16 32; -fx-background-color: linear-gradient(to bottom, #4da6ff, #2d7fd1); -fx-text-fill: #ffffff; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand;" 
+            onAction="#handleCellClick" />
+
+
     </children>
+    <padding>
+        <Insets top="60" bottom="60" left="40" right="40" />
+    </padding>
 </fx:root>

@@ -18,7 +18,7 @@ public class Fou extends Piece {
     }
 
     @Override
-    protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
+    public List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
         Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
         List<Case> diagonaleClassique0 = diagonalPathStrategy.getPath(plateau, indexActuel, 0, switchPartieStrategy);
@@ -47,7 +47,7 @@ public class Fou extends Piece {
     }
 
     @Override
-    protected List<Case> manger(Plateau plateau, int[] indexActuel) {
+    public List<Case> manger(Plateau plateau, int[] indexActuel) {
         List<Case> captures = new ArrayList<>();
         Case caseActuelle = plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]);
         List<Case> diagonaleClassique0 = diagonalPathStrategy.getPath(plateau, indexActuel, 0, switchPartieStrategy);

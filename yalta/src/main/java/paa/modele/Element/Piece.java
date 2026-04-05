@@ -86,7 +86,7 @@ public abstract class Piece {
      * @param indexActuel index de la case actuelle(reference pour trouver les cases de deplacement)
      * @return la liste des cases de deplacement
      */
-    abstract protected List<Case> deplacement(Plateau plateau, int[] indexActuel);
+    abstract public List<Case> deplacement(Plateau plateau, int[] indexActuel);
 
     /**
      * recupere tout les cases sur lequel la piece peut manger une piece adverse.
@@ -94,5 +94,5 @@ public abstract class Piece {
      * @param indexActuel index de la case actuelle(reference pour trouver les cases de capture)
      * @return la liste des cases de capture
      */
-    abstract protected List<Case> manger(Plateau plateau, int[] indexActuel);    
+    abstract public List<Case> manger(Plateau plateau, int[] indexActuel);    
 }

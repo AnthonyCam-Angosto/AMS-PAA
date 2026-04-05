@@ -16,7 +16,7 @@ public class Pion extends Piece {
     }
 
     @Override
-    protected List<Case> deplacement(Plateau plateau, int[] indexActuel) {
+    public List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
 
         if (!hasMoved()) {
@@ -49,7 +49,7 @@ public class Pion extends Piece {
     }
 
     @Override
-    protected List<Case> manger(Plateau plateau, int[] indexActuel) {
+    public List<Case> manger(Plateau plateau, int[] indexActuel) {
         List<Case> captures = new ArrayList<>();
         int[] range={-1,1};
 
@@ -73,7 +73,6 @@ public class Pion extends Piece {
                     captures.add(c);
                 }
                 c=switchPartieStrategy.resolveSpecial(plateau, indexActuel, i);
-                System.out.println("c special "+c.getId());
                 if(c.getPiece()==null) continue;
                 if (c.getPiece().couleur != this.couleur) {
                     captures.add(c);
@@ -114,7 +113,7 @@ public class Pion extends Piece {
      * @return la case de promotion, ou null si aucune promotion n'est disponible
      */
     @Override
-    protected List<Case> specials(Plateau plateau, int[] indexActuel) {
+    public List<Case> specials(Plateau plateau, int[] indexActuel) {
         boolean changedPartie = hasChangedPartie(plateau, indexActuel);
         List<Case> destinationsPromotion = new ArrayList<>();
         Case destinationPromotion = null;
