@@ -3,10 +3,9 @@ package paa.modele;
 import java.util.ArrayList;
 import java.util.List;
 
-import paa.controler.ActionDeplacementPossible;
-import paa.controler.ActionManger;
-import paa.modele.Element.Piece;
 import paa.modele.Element.Roi;
+import paa.modele.Element.Pion;
+import paa.modele.Element.Piece;
 import paa.modele.Utilisateur.IA;
 import paa.modele.Utilisateur.Joueur;
 import paa.modele.Utilisateur.Utilisateur;
@@ -191,7 +190,10 @@ public class Partie implements PartieSubject {
      * @return true si le joueur est en échec et mat, false sinon
      */
     public boolean EchecEtMat(Utilisateur joueur) {
-        return false; // TODO Implémentation de la logique d'échec et mat
+        if (!echec(joueur)) {
+            return false;
+        }
+        return !hasAnyLegalMove(joueur, Plateau.getInstance());
     }
 
     public boolean pat(Utilisateur joueur) {
@@ -199,7 +201,14 @@ public class Partie implements PartieSubject {
             return false;
         }
 
-        Plateau plateau = Plateau.getInstance();
+        return !hasAnyLegalMove(joueur, Plateau.getInstance());
+    }
+
+    /**
+     * Vérifie si le joueur possède au moins un coup légal (déplacement, capture, ou coup spécial).
+     */
+    private boolean hasAnyLegalMove(Utilisateur joueur, Plateau plateau) {
+
         List<Case> casesAvecPiece = plateau.getAllCasePiece();
 
         for (Case casePiece : casesAvecPiece) {
@@ -211,12 +220,63 @@ public class Partie implements PartieSubject {
             List<Case> deplacements = casePiece.getPiece().deplacement(plateau, indexPiece);
             List<Case> captures = casePiece.getPiece().manger(plateau, indexPiece);
 
-            if (!deplacements.isEmpty() || !captures.isEmpty()) {
-                return false; // Le joueur a au moins un coup légal, donc ce n'est pas un pat
+            for (Case destination : deplacements) {
+                if (isLegalMove(joueur, casePiece, destination, plateau)) {
+                    return false;
+                }
+            }
+
+            for (Case destination : captures) {
+                if (isLegalMove(joueur, casePiece, destination, plateau)) {
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+    /**
+     * Vérifie si un coup candidat est légal en simulant le déplacement puis en contrôlant
+     * que le roi du joueur n'est pas en échec après le coup.
+     */
+    private boolean isLegalMove(Utilisateur joueur, Case depart, Case arrivee, Plateau plateau) {
+        Piece pieceDepart = depart.getPiece();
+        if (pieceDepart == null) {
+            return false;
+        }
+
+        Piece pieceArrivee = arrivee.getPiece();
+        Case caseCaptureEnPassant = null;
+        Piece pieceCaptureEnPassant = null;
+
+        int[] indexDepart = plateau.getIndexCase(depart);
+        int[] indexArrivee = plateau.getIndexCase(arrivee);
+
+        // Simule la capture en passant pour un pion qui capture sur une case vide en diagonale.
+        if (pieceDepart instanceof Pion && pieceArrivee == null && indexDepart != null && indexArrivee != null
+                && indexDepart[0] != indexArrivee[0] && indexDepart[1] != indexArrivee[1]) {
+            caseCaptureEnPassant = plateau.getCase(indexDepart[0], indexArrivee[1], indexDepart[2]);
+            if (caseCaptureEnPassant != null) {
+                pieceCaptureEnPassant = caseCaptureEnPassant.getPiece();
+                caseCaptureEnPassant.setPiece(null);
             }
         }
 
-        return true;
+        depart.setPiece(null);
+        arrivee.setPiece(pieceDepart);
+
+        boolean legal = !echec(joueur);
+
+        // Rollback de la simulation.
+        arrivee.setPiece(pieceArrivee);
+        depart.setPiece(pieceDepart);
+        if (caseCaptureEnPassant != null) {
+            caseCaptureEnPassant.setPiece(pieceCaptureEnPassant);
+        }
+
+        return legal;
     }
 
     @Override

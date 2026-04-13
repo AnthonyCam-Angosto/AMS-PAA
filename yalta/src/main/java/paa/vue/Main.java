@@ -1,7 +1,5 @@
 package paa.vue;
 
-import java.io.IOException;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
 import paa.App;
@@ -22,16 +20,14 @@ public class Main extends VBox implements LoadFxml {
     }
 
     @Override
-    public void loadFromFxml() {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource(MENU_FXML_PATH));
+    public String getFxmlPath() {
+        return MENU_FXML_PATH;
+    }
+
+    @Override
+    public void configureLoader(FXMLLoader loader) {
         loader.setRoot(this);
         loader.setController(new MenuControlleur(this));
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            throw new IllegalStateException("Impossible de charger " + MENU_FXML_PATH, e);
-        }
     }
 
     public App getApp() {

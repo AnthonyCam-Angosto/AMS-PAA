@@ -1,9 +1,6 @@
 package paa.vue;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -37,16 +34,8 @@ public class PromotionPopupView extends VBox implements LoadFxml {
     }
 
     @Override
-    public void loadFromFxml() {
-        FXMLLoader loader = new FXMLLoader(PromotionPopupView.class.getResource(PROMOTION_FXML_PATH));
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            throw new IllegalStateException("Impossible de charger " + PROMOTION_FXML_PATH, e);
-        }
+    public String getFxmlPath() {
+        return PROMOTION_FXML_PATH;
     }
 
     public Button getQueenButton() {

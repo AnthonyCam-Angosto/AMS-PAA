@@ -15,7 +15,7 @@ public class ActionManger implements ActionCase {
 
     @Override
     public void click() {
-        Plateau.getInstance().deplacementPiece(casePiece, actuel);
+        Plateau.getInstance().deplacementPiece(casePiece, actuel,false);
     }
     
 }

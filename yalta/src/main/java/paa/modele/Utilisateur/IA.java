@@ -11,8 +11,8 @@ public class IA extends Utilisateur {
 
     @Override
     public void jouer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'jouer'");
+        //TODO: implémenter une IA
+        System.out.println("C'est le tour de l'IA " + getCouleur() + "!");
     }
 
     @Override
@@ -21,14 +21,4 @@ public class IA extends Utilisateur {
         throw new UnsupportedOperationException("Unimplemented method 'echec'");
     }
 
-    @Override
-    public void onTourChange(Utilisateur joueur) {
-        if (joueur == this) {
-            debuterTour();
-            System.out.println("C'est le tour de l'IA " + joueur.getCouleur() + "!");
-        } else {
-            finirTour();
-        }
-    }
-    
 }

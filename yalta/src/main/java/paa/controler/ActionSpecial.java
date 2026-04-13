@@ -18,7 +18,6 @@ public class ActionSpecial implements ActionCase {
         Piece piece = caseActuelle.getPiece();
         switch (piece.getValeur()) {
             case 1://pion
-                //TODO promotion pas implementer
                 Plateau.getInstance().promotion(caseActuelle, caseSpecial);
                 break;
             case 1000://roi

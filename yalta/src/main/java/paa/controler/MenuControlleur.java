@@ -24,7 +24,6 @@ public class MenuControlleur{
      * Initialise le spinner pour le nombre de joueurs avec une plage de 1 à 3 et une valeur par défaut de 3.
      */
     @FXML
-    @SuppressWarnings("unused")
     private void initialize() {
         playerCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3, 3));
     }
@@ -35,7 +34,6 @@ public class MenuControlleur{
      * @param event L'événement de clic sur le bouton de démarrage de la partie
      */
     @FXML
-    @SuppressWarnings("unused")
     private void handleCellClick(ActionEvent event) {
         int playerCount = playerCountSpinner.getValue();
         System.out.println("Nombre de joueurs selectionne : " + playerCount);

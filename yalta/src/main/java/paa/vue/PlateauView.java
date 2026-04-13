@@ -1,10 +1,8 @@
 package paa.vue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -34,16 +32,8 @@ public class PlateauView extends Group implements LoadFxml {
     }
 
     @Override
-    public void loadFromFxml() {
-        FXMLLoader loader = new FXMLLoader(PlateauView.class.getResource(BOARD_FXML_PATH));
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            throw new IllegalStateException("Impossible de charger " + BOARD_FXML_PATH, e);
-        }
+    public String getFxmlPath() {
+        return BOARD_FXML_PATH;
     }
 
     /**

@@ -95,7 +95,7 @@ public class PionTest {
 
         assertTrue(captures.contains(caseCapture), "La case vide doit être proposée pour la capture en passant.");
 
-        plateau.deplacementPiece(caseDepart, caseCapture);
+        plateau.deplacementPiece(caseDepart, caseCapture, false);
 
         assertEquals(pionActeur, caseCapture.getPiece(), "Le pion doit arriver sur la case cible.");
         assertTrue(caseVulnerable.isEmpty(), "Le pion capturable doit être retiré du plateau.");

@@ -9,7 +9,7 @@ import paa.controler.ActionSpecial;
 import paa.controler.ActionVide;
 import paa.modele.Couleur;
 import paa.modele.Element.Piece;
-import paa.modele.Element.PieceFactoryStandard;
+import paa.modele.Element.PieceFactory;
 import paa.modele.Element.Pion;
 import paa.modele.deplacement.DiagonalSwitchPartieStrategy;
 import paa.modele.deplacement.StandardSwitchPartieStrategy;
@@ -121,35 +121,35 @@ public class Plateau implements CaseComponent {
      * Crée les pièces sur le plateau pour chaque partie.
      */
     public void createPieces(){
-        PieceFactoryStandard factory = new PieceFactoryStandard();
+        PieceFactory factory = new PieceFactory();
         Couleur[] couleurs = Partie.getInstance().getOrdre();
         SwitchPartieStrategy switchPartieStrategy2 = new DiagonalSwitchPartieStrategy();
         SwitchPartieStrategy switchPartieStrategy = new StandardSwitchPartieStrategy();
 
         for (int k = 0; k < 3; k++) {
             for (int i = 0; i < 8; i++) {
-                Piece piece = factory.creerPiece("pion", couleurs[k], switchPartieStrategy);
+                Piece piece = factory.createPiece("pion", couleurs[k], switchPartieStrategy);
                 cases[1][i][k].setPiece(piece);
             }
-            Piece piece = factory.creerPiece("tour", couleurs[k], switchPartieStrategy);
+            Piece piece = factory.createPiece("tour", couleurs[k], switchPartieStrategy);
             cases[0][0][k].setPiece(piece);
-            piece = factory.creerPiece("tour", couleurs[k], switchPartieStrategy);
+            piece = factory.createPiece("tour", couleurs[k], switchPartieStrategy);
             cases[0][7][k].setPiece(piece);
 
-            piece = factory.creerPiece("cavalier", couleurs[k], switchPartieStrategy);
+            piece = factory.createPiece("cavalier", couleurs[k], switchPartieStrategy);
             cases[0][1][k].setPiece(piece);
-            piece = factory.creerPiece("cavalier", couleurs[k], switchPartieStrategy);
+            piece = factory.createPiece("cavalier", couleurs[k], switchPartieStrategy);
             cases[0][6][k].setPiece(piece);
 
-            piece = factory.creerPiece("fou", couleurs[k], switchPartieStrategy2);
+            piece = factory.createPiece("fou", couleurs[k], switchPartieStrategy2);
             cases[0][2][k].setPiece(piece);
-            piece = factory.creerPiece("fou", couleurs[k], switchPartieStrategy2);
+            piece = factory.createPiece("fou", couleurs[k], switchPartieStrategy2);
             cases[0][5][k].setPiece(piece);
             
             
-            piece = factory.creerPiece("reine", couleurs[k], switchPartieStrategy);
+            piece = factory.createPiece("reine", couleurs[k], switchPartieStrategy);
             cases[0][3][k].setPiece(piece);
-            piece = factory.creerPiece("roi", couleurs[k], switchPartieStrategy);
+            piece = factory.createPiece("roi", couleurs[k], switchPartieStrategy);
             cases[0][4][k].setPiece(piece);
         }
     }
@@ -158,8 +158,9 @@ public class Plateau implements CaseComponent {
      * Déplace une pièce d'une case de départ vers une case d'arrivée, en mettant à jour les pièces sur les cases et en gérant les tours de jeu.
      * @param caseDepart Case de départ
      * @param caseArrivee Case d'arrivée
+     * @param isSpecial Indique si le déplacement est spécial
      */
-    public void deplacementPiece(Case caseDepart, Case caseArrivee) {
+    public void deplacementPiece(Case caseDepart, Case caseArrivee,boolean isSpecial) {
         Piece piece = caseDepart.getPiece();
         if (piece != null) {
             if (piece instanceof Pion && caseArrivee.isEmpty()) {
@@ -176,7 +177,9 @@ public class Plateau implements CaseComponent {
             caseDepart.setPiece(null);
         }
         deselectionner();
-        Partie.getInstance().tourSuivant();
+        if(!isSpecial){
+            Partie.getInstance().tourSuivant();
+        }
     }
 
     private void capturerEnPassant(Case caseDepart, Case caseArrivee) {
@@ -257,7 +260,7 @@ public class Plateau implements CaseComponent {
      * @param casePromotion Case de promotion vers laquelle déplacer le pion
      */
     public void promotion(Case casePion, Case casePromotion) {
-        deplacementPiece(casePion, casePromotion);
+        deplacementPiece(casePion, casePromotion,true);
         casePromotion.notifyPromotion(casePromotion);
     }
 
@@ -268,8 +271,8 @@ public class Plateau implements CaseComponent {
      */
     public void finPromotion(Case casePromotion,String type) {
         Piece pion = casePromotion.getPiece();
-        PieceFactoryStandard factory = new PieceFactoryStandard();
-        Piece piecePromue = factory.creerPiece(type, pion.getCouleur(),new StandardSwitchPartieStrategy());
+        PieceFactory factory = new PieceFactory();
+        Piece piecePromue = factory.createPiece(type, pion.getCouleur(),new StandardSwitchPartieStrategy());
         casePromotion.setPiece(piecePromue);
         deselectionner();
         Partie.getInstance().tourSuivant();

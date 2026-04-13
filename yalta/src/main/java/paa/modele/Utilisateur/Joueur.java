@@ -9,13 +9,8 @@ public class Joueur extends Utilisateur {
     }
 
     @Override
-    public void onTourChange(Utilisateur joueur) {
-        if (joueur == this) {
-            debuterTour();
-            jouer();
-        } else {
-            finirTour();
-        }
+    public void jouer() {
+        // Le joueur humain joue via l'interface graphique.
     }
     
 }

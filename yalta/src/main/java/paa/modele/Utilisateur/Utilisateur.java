@@ -22,15 +22,6 @@ public abstract class Utilisateur implements PartieObserver {
     public boolean isTour() {
         return tour;
     }
-
-    protected void debuterTour() {
-        this.tour = true;
-    }
-
-    protected void finirTour() {
-        this.tour = false;
-    }
-
     public Couleur getCouleur() {
         return couleur;
     }
@@ -52,10 +43,25 @@ public abstract class Utilisateur implements PartieObserver {
     }
 
     /**
-     * Permet à l'utilisateur de jouer un coup.
-     * utiliser seulement par les IA,les joeurs utilise leur interface pour jouer, et cette méthode est appelé par l'interface pour les IA
+     * Template Method: flux unique de gestion d'un changement de tour.
+     * Les sous-classes ne définissent que les etapes variables via jouer().
      */
-    public void jouer(){}
+    @Override
+    public final void onTourChange(Utilisateur joueur) {
+        if (joueur != this) {
+            tour = false;
+            return;
+        }
+
+        tour=true;
+        jouer();
+    }
+
+
+    /**
+     * Permet à l'utilisateur de jouer un coup.
+     */
+    public abstract void jouer();
 
 
     /**
