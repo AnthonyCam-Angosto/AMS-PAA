@@ -11,8 +11,27 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Pion extends Piece {
+    private boolean enPassant=false;//indique si le pion est en position d'en passant
+    private String case2Id=null; //case ou le piont peut se depacer de 2 cases, pour le en passant
+
     public Pion(Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
         super(1, couleur,switchPartieStrategy);
+    }
+
+    /**
+     * Récupère l'identifiant de la case où le pion peut se déplacer de 2 cases, utilisé pour la règle du en passant.
+     * @return
+     */
+    public String getEnPassantId() {
+        return case2Id;
+    }
+
+    public void setEnPassant(boolean enPassant) {
+        this.enPassant = enPassant;
+    }
+
+    public boolean isEnPassant() {
+        return enPassant;
     }
 
     @Override
@@ -25,7 +44,13 @@ public class Pion extends Piece {
                 Case c = plateau.getCase(indexActuel[0] + 2, indexActuel[1], indexActuel[2]);
                 if (c.isEmpty()) {
                     deplacements.add(c);
+                    case2Id = c.getId();
                 }
+            }
+        }else{
+            if(enPassant){
+                case2Id = null;
+                enPassant = false;
             }
         }
 
@@ -57,38 +82,54 @@ public class Pion extends Piece {
             for (int i : range) {
                 if(indexActuel[1]+i<0 || indexActuel[1]+i>7) continue;
                 Case c = plateau.getCase(indexActuel[0] + 1, indexActuel[1] + i, indexActuel[2]);
-
-                if(c.getPiece()==null) continue;
-                if (c.getPiece().couleur != this.couleur) {
-                    captures.add(c);
-                }
+                ajouterCaptureOuEnPassant(plateau, indexActuel, i, c, captures);
             }
         }else if(!hasChangedPartie(plateau, indexActuel)){
             for (int i : range) {
                 if(indexActuel[1]+i<0 || indexActuel[1]+i>7) continue;
 
                 Case c = switchPartieStrategy.resolve(plateau, indexActuel, i);
-                if(c.getPiece()==null) continue;
-                if (c.getPiece().couleur != this.couleur) {
-                    captures.add(c);
-                }
+                ajouterCaptureOuEnPassant(plateau, indexActuel, i, c, captures);
                 c=switchPartieStrategy.resolveSpecial(plateau, indexActuel, i);
-                if(c.getPiece()==null) continue;
-                if (c.getPiece().couleur != this.couleur) {
-                    captures.add(c);
-                }
+                ajouterCaptureOuEnPassant(plateau, indexActuel, i, c, captures);
             }
         }else{
             for (int i : range) {
                 if(indexActuel[1]+i<0 || indexActuel[1]+i>7) continue;
                 Case c = plateau.getCase(indexActuel[0] - 1, indexActuel[1] + i, indexActuel[2]);
-                if(c.getPiece()==null) continue;
-                if (c.getPiece().couleur != this.couleur) {
-                    captures.add(c);
-                }
+                ajouterCaptureOuEnPassant(plateau, indexActuel, i, c, captures);
             }
         }
         return captures;
+    }
+
+    private void ajouterCaptureOuEnPassant(Plateau plateau, int[] indexActuel, int deltaY, Case caseCible, List<Case> captures) {
+        if(caseCible == null) {
+            return;
+        }
+
+        if(caseCible.getPiece() != null) {
+            if (caseCible.getPiece().couleur != this.couleur && !captures.contains(caseCible)) {
+                captures.add(caseCible);
+            }
+            return;
+        }
+
+        int yVoisin = indexActuel[1] + deltaY;
+        if(yVoisin < 0 || yVoisin > 7) {
+            return;
+        }
+
+        Case caseVoisine = plateau.getCase(indexActuel[0], yVoisin, indexActuel[2]);
+        if(caseVoisine == null || caseVoisine.getPiece() == null || !(caseVoisine.getPiece() instanceof Pion pionVoisin)) {
+            return;
+        }
+
+        if(pionVoisin.getCouleur() != this.couleur && pionVoisin.enPassant) {
+            if(!captures.contains(caseCible)) {
+                captures.add(caseCible);
+            }
+        }
     }
     
 

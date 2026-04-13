@@ -61,7 +61,8 @@ public class Cavalier extends Piece {
                 ? dy < 0
                 : doitUtiliserTransitionSpeciale(plateau, indexActuel, dy);
             if (specialDx1) {
-                Case caseTransitionSpeciale = switchPartieStrategy.resolveSpecial(plateau, indexActuel, 0);
+                int deltaSpecialDx1 = (estCaseE9(plateau, indexActuel) && dy < 0) ? 4 : 0;
+                Case caseTransitionSpeciale = switchPartieStrategy.resolveSpecial(plateau, indexActuel, deltaSpecialDx1);
                 if (caseTransitionSpeciale != null) {
                     int[] indexTransitionSpecial = plateau.getIndexCase(caseTransitionSpeciale);
                     int newXSpecial = indexTransitionSpecial[0];
@@ -121,7 +122,13 @@ public class Cavalier extends Piece {
                 }
 
                 if (doitUtiliserTransitionSpeciale(plateau, indexActuel, dy)) {
-                    int deltaSpecial = (estCaseE4(plateau, indexActuel) && dy > 0) ? -2 : 0;
+                    int deltaSpecial = 0;
+                    if (estCaseE4(plateau, indexActuel) && dy > 0) {
+                        deltaSpecial = -2;
+                    }
+                    if (estCaseE9(plateau, indexActuel) && dy < 0) {
+                        deltaSpecial = 2;
+                    }
                     Case caseTransitionSpeciale = switchPartieStrategy.resolveSpecial(plateau, indexActuel, deltaSpecial);
                     if (caseTransitionSpeciale != null) {
                         int[] indexTransitionSpecial = plateau.getIndexCase(caseTransitionSpeciale);
@@ -162,6 +169,10 @@ public class Cavalier extends Piece {
 
     private boolean estCaseE4(Plateau plateau, int[] indexActuel) {
         return "E4".equals(plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]).getId());
+    }
+
+    private boolean estCaseE9(Plateau plateau, int[] indexActuel) {
+        return "E9".equals(plateau.getCase(indexActuel[0], indexActuel[1], indexActuel[2]).getId());
     }
 
     private void ajouterSiValide(Case cible, List<Case> resultats, boolean capture) {

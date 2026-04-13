@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import paa.modele.Couleur;
+import paa.modele.Partie;
 import paa.modele.deplacement.StandardSwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
@@ -19,6 +20,10 @@ public class PionTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        java.lang.reflect.Field partieField = Partie.class.getDeclaredField("instance");
+        partieField.setAccessible(true);
+        partieField.set(null, null);
+
         // Reset le singleton Plateau
         java.lang.reflect.Field instanceField = Plateau.class.getDeclaredField("instance");
         instanceField.setAccessible(true);
@@ -28,6 +33,10 @@ public class PionTest {
 
     @AfterEach
     void tearDown() throws Exception {
+        java.lang.reflect.Field partieField = Partie.class.getDeclaredField("instance");
+        partieField.setAccessible(true);
+        partieField.set(null, null);
+
         // Reset le singleton Plateau après chaque test
         java.lang.reflect.Field instanceField = Plateau.class.getDeclaredField("instance");
         instanceField.setAccessible(true);
@@ -66,6 +75,30 @@ public class PionTest {
         for (Case c : destinationPromotion) {
             assertTrue(java.util.Arrays.asList(casesTest).contains(c.getId()), "Les cases de promotion doivent être A8, B8 ou C8 :"+c.getId());
         }
+    }
+
+    @Test
+    void testEnPassantCapture() {
+        Case caseDepart = plateau.getCaseById("B2");
+        Case caseCapture = plateau.getCaseById("C3");
+        Case caseVulnerable = plateau.getCaseById("C2");
+
+        Pion pionActeur = new Pion(Couleur.BLANC, new StandardSwitchPartieStrategy());
+        caseDepart.setPiece(pionActeur);
+
+        Pion pionVulnerable = new Pion(Couleur.NOIR, new StandardSwitchPartieStrategy());
+        pionVulnerable.setHasMoved(true);
+        pionVulnerable.setEnPassant(true);
+        caseVulnerable.setPiece(pionVulnerable);
+
+        List<Case> captures = pionActeur.manger(plateau, plateau.getIndexCase(caseDepart));
+
+        assertTrue(captures.contains(caseCapture), "La case vide doit être proposée pour la capture en passant.");
+
+        plateau.deplacementPiece(caseDepart, caseCapture);
+
+        assertEquals(pionActeur, caseCapture.getPiece(), "Le pion doit arriver sur la case cible.");
+        assertTrue(caseVulnerable.isEmpty(), "Le pion capturable doit être retiré du plateau.");
     }
 
 }

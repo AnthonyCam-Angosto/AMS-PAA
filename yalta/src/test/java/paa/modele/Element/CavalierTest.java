@@ -120,4 +120,24 @@ public class CavalierTest {
             assertTrue(java.util.Arrays.asList(casesTest).contains(c.getId()), "Le cavalier doit pouvoir se déplacer vers :"+c.getId());
         }
     }
+
+    @Test
+    void testDeplacementCavalierE9(){
+        String[] casesTest = {"F3","G4","G10","F11","I11","J10","J5","I6","C4","D3"};
+        Case caseE9 = plateau.getCaseById("E9");
+        Cavalier cavalier = new Cavalier(Couleur.BLANC, new StandardSwitchPartieStrategy());
+        caseE9.setPiece(cavalier);
+        int[] index = plateau.getIndexCase(caseE9);
+        List<Case> deplacements = cavalier.deplacement(plateau, index);
+        System.out.println("Déplacements possibles pour le cavalier en E9:");
+        for (Case c : deplacements) {
+            System.out.println(" - " + c.getId());
+        }
+
+        assertEquals(casesTest.length, deplacements.size(), "Le cavalier doit avoir exactement "+casesTest.length+" déplacements possibles.");
+        for (Case c : deplacements) {
+            assertTrue(java.util.Arrays.asList(casesTest).contains(c.getId()), "Le cavalier ne doit pas pouvoir se déplacer vers :"+c.getId());
+        }
+    }
+
 }

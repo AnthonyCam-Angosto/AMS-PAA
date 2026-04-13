@@ -10,6 +10,7 @@ import paa.controler.ActionVide;
 import paa.modele.Couleur;
 import paa.modele.Element.Piece;
 import paa.modele.Element.PieceFactoryStandard;
+import paa.modele.Element.Pion;
 import paa.modele.deplacement.DiagonalSwitchPartieStrategy;
 import paa.modele.deplacement.StandardSwitchPartieStrategy;
 import paa.modele.deplacement.SwitchPartieStrategy;
@@ -161,12 +162,48 @@ public class Plateau implements CaseComponent {
     public void deplacementPiece(Case caseDepart, Case caseArrivee) {
         Piece piece = caseDepart.getPiece();
         if (piece != null) {
+            if (piece instanceof Pion && caseArrivee.isEmpty()) {
+                capturerEnPassant(caseDepart, caseArrivee);
+            }
             piece.setHasMoved(true);
+            if(piece instanceof Pion){
+                Pion pion = (Pion) piece;
+                if(pion.getEnPassantId()!=null && pion.getEnPassantId().equals(caseArrivee.getId())){
+                    pion.setEnPassant(true);
+                }
+            }
             caseArrivee.setPiece(piece);
             caseDepart.setPiece(null);
         }
         deselectionner();
         Partie.getInstance().tourSuivant();
+    }
+
+    private void capturerEnPassant(Case caseDepart, Case caseArrivee) {
+        int[] indexDepart = getIndexCase(caseDepart);
+        int[] indexArrivee = getIndexCase(caseArrivee);
+
+        if(indexDepart == null || indexArrivee == null) {
+            return;
+        }
+
+        int deltaY = indexArrivee[1] - indexDepart[1];
+        if(Math.abs(deltaY) != 1) {
+            return;
+        }
+
+        Case caseCapture = getCase(indexDepart[0], indexArrivee[1], indexDepart[2]);
+        if(caseCapture == null || caseCapture.getPiece() == null || !(caseCapture.getPiece() instanceof Pion pionCapture)) {
+            return;
+        }
+
+        if(pionCapture.getCouleur() == caseDepart.getPiece().getCouleur()) {
+            return;
+        }
+
+        if(pionCapture.isEnPassant()) {
+            caseCapture.setPiece(null);
+        }
     }
 
     @Override

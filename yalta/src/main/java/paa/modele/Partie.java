@@ -60,41 +60,41 @@ public class Partie implements PartieSubject {
      * Passe au tour suivant et notifie les joueurs du changement de tour.
      */
     public void tourSuivant() {
-        Utilisateur joueurActuel=joueurs[tour%3];
+        if(tour!=-1){
+            Utilisateur joueurActuel=joueurs[tour%3];
+            for(Utilisateur joueur : joueurs){
+                Boolean enEchec=echec(joueur);
 
-        
-        for(Utilisateur joueur : joueurs){
-            Boolean enEchec=echec(joueur);
-
-            if(joueur.isEchec() && joueurActuel.equals(joueur)){
+                if(joueur.isEchec() && joueurActuel.equals(joueur)){
+                    if(enEchec){
+                        System.out.println("Le joueur "+joueur.getCouleur()+" est echec et mat ! il n'a pas fait de coup pour sortir de l'échec");
+                        finPartie(joueur, TypeFin.ECHEC_ET_MAT);
+                        return;
+                    }
+                }
                 if(enEchec){
-                    System.out.println("Le joueur "+joueur.getCouleur()+" est echec et mat ! il n'a pas fait de coup pour sortir de l'échec");
-                    finPartie(joueur, TypeFin.ECHEC_ET_MAT);
-                    return;
-                }
-            }
-            if(enEchec){
-                joueur.setEchec(enEchec);
-                if(enEchec){
-                    System.out.println("Le joueur "+joueur.getCouleur()+" est en échec !");
-                }
-                if(EchecEtMat(joueur)){
-                    System.out.println("Le joueur "+joueur.getCouleur()+" est en échec et mat !");
-                    finPartie(joueurActuel, TypeFin.ECHEC_ET_MAT);
-                    return;
-                }
-            }else{
-                joueur.setEchec(enEchec);
-                if(pat(joueur)){
-                    System.out.println("Le joueur "+joueur.getCouleur()+" est en pat !");
-                    finPartie(joueur, TypeFin.PAT);
-                    return;
+                    joueur.setEchec(enEchec);
+                    if(enEchec){
+                        System.out.println("Le joueur "+joueur.getCouleur()+" est en échec !");
+                    }
+                    if(EchecEtMat(joueur)){
+                        System.out.println("Le joueur "+joueur.getCouleur()+" est en échec et mat !");
+                        finPartie(joueurActuel, TypeFin.ECHEC_ET_MAT);
+                        return;
+                    }
+                }else{
+                    joueur.setEchec(enEchec);
+                    if(pat(joueur)){
+                        System.out.println("Le joueur "+joueur.getCouleur()+" est en pat !");
+                        finPartie(joueur, TypeFin.PAT);
+                        return;
+                    }
                 }
             }
         }
 
         tour++;
-        joueurActuel=joueurs[tour%3];
+        Utilisateur joueurActuel=joueurs[tour%3];
         notifyTourChange(joueurActuel);
     }
 

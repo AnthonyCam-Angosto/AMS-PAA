@@ -11,9 +11,8 @@
 
 <fx:root type="VBox" alignment="TOP_CENTER" spacing="20" style="-fx-background-color: linear-gradient(to bottom, #0a0e27, #1a1f3a);" xmlns:fx="http://javafx.com/fxml">
 <children>
-    <Label fx:id="titleLabel" text="♔ Echecs Yalta ♔" style="-fx-font-family: 'Consolas'; -fx-font-size: 42; -fx-font-weight: bold; -fx-text-fill: #4da6ff;" />
 
-    <HBox alignment="TOP_CENTER" spacing="22" VBox.vgrow="ALWAYS" style="-fx-padding: 0 20 16 20;">
+    <HBox alignment="TOP_CENTER" spacing="22" VBox.vgrow="ALWAYS" style="-fx-padding: 30 20 16 20;">
         <children>
             <StackPane fx:id="boardContainer" HBox.hgrow="ALWAYS">
                 <children>
