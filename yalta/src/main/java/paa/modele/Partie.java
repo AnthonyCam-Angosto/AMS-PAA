@@ -3,9 +3,9 @@ package paa.modele;
 import java.util.ArrayList;
 import java.util.List;
 
-import paa.modele.Element.Roi;
-import paa.modele.Element.Pion;
 import paa.modele.Element.Piece;
+import paa.modele.Element.Pion;
+import paa.modele.Element.Roi;
 import paa.modele.Utilisateur.IA;
 import paa.modele.Utilisateur.Joueur;
 import paa.modele.Utilisateur.Utilisateur;
@@ -20,6 +20,7 @@ import paa.modele.plateau.Plateau;
  */
 public class Partie implements PartieSubject {
     private int tour;
+    private boolean partieFinie=false;
     private final Utilisateur[] joueurs;
     private final List<PartieObserver> observers=new ArrayList<>();
 
@@ -57,6 +58,7 @@ public class Partie implements PartieSubject {
 
     /**
      * Passe au tour suivant et notifie les joueurs du changement de tour.
+     * Avant de passer au tour suivant, vérifie si le joueur actuel est en échec ou en échec et mat, et gère la fin de la partie en conséquence.
      */
     public void tourSuivant() {
         if(tour!=-1){
@@ -78,7 +80,7 @@ public class Partie implements PartieSubject {
                     }
                     if(EchecEtMat(joueur)){
                         System.out.println("Le joueur "+joueur.getCouleur()+" est en échec et mat !");
-                        finPartie(joueurActuel, TypeFin.ECHEC_ET_MAT);
+                        finPartie(joueur, TypeFin.ECHEC_ET_MAT);
                         return;
                     }
                 }else{
@@ -91,14 +93,22 @@ public class Partie implements PartieSubject {
                 }
             }
         }
-
+        if(partieFinie){
+            return;
+        }
         tour++;
         Utilisateur joueurActuel=joueurs[tour%3];
         notifyTourChange(joueurActuel);
     }
 
+    /**
+     * Termine la partie en notifiant les observateurs de la fin de la partie avec le perdant et le type de fin (échec et mat ou pat).
+     * @param perdant Le joueur qui a perdu la partie
+     * @param typeFin Le type de fin de la partie (échec et mat ou pat)
+     */
     public void finPartie(Utilisateur perdant, TypeFin typeFin) {
         System.out.println("La partie est terminée !");
+        partieFinie=true;
         notifyPartieFinie(perdant, typeFin);
     }
 
@@ -121,6 +131,10 @@ public class Partie implements PartieSubject {
     }
 
 
+    /**
+     * Ajoute un joueur à la partie en fonction de l'ordre de jeu. Si les trois emplacements sont déjà occupés, une exception est levée.
+     * @param joueur Le joueur à ajouter à la partie
+     */
     public void addJoueur(Utilisateur joueur) {
         if (joueurs[0] == null) {
             joueurs[0] = joueur;
@@ -133,6 +147,19 @@ public class Partie implements PartieSubject {
         }
     }
 
+    public Utilisateur getJoueurByCouleur(Couleur couleur) {
+        for (Utilisateur joueur : joueurs) {
+            if (joueur.getCouleur() == couleur) {
+                return joueur;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Initialise la partie en réinitialisant l'état de la partie et en ajoutant le nombre spécifié de joueurs humains et d'IA selon l'ordre de jeu.
+     * @param nbNoIA Le nombre de joueurs humains (0, 1, ou 2) à ajouter à la partie. Les joueurs restants seront des IA.
+     */
     public void initialiserPartie(int nbNoIA) {
         reset();
 
@@ -196,8 +223,13 @@ public class Partie implements PartieSubject {
         return !hasAnyLegalMove(joueur, Plateau.getInstance());
     }
 
+    /**
+     * Vérifie si le joueur spécifié est en pat en vérifiant s'il n'est pas en échec et s'il n'a aucun coup légal pour jouer.
+     * @param joueur Le joueur à vérifier pour le pat
+     * @return true si le joueur est en pat, false sinon
+     */
     public boolean pat(Utilisateur joueur) {
-        if(echec(joueur)){//le pat ne peut pas arriver si le joueur est en échec
+        if(echec(joueur)){
             return false;
         }
 
@@ -205,7 +237,10 @@ public class Partie implements PartieSubject {
     }
 
     /**
-     * Vérifie si le joueur possède au moins un coup légal (déplacement, capture, ou coup spécial).
+     * Vérifie si le joueur spécifié a au moins un coup légal en générant tous les déplacements et captures possibles pour les pièces du joueur et en vérifiant si au moins un de ces coups est légal (c'est-à-dire qu'il ne laisse pas le roi du joueur en échec).
+     * @param joueur Le joueur pour lequel vérifier les coups légaux
+     * @param plateau Le plateau de jeu
+     * @return true si le joueur a au moins un coup légal, false sinon
      */
     private boolean hasAnyLegalMove(Utilisateur joueur, Plateau plateau) {
 
@@ -222,7 +257,7 @@ public class Partie implements PartieSubject {
 
             for (Case destination : deplacements) {
                 if (isLegalMove(joueur, casePiece, destination, plateau)) {
-                    return false;
+                    return true;
                 }
             }
 
@@ -238,10 +273,14 @@ public class Partie implements PartieSubject {
     }
 
     /**
-     * Vérifie si un coup candidat est légal en simulant le déplacement puis en contrôlant
-     * que le roi du joueur n'est pas en échec après le coup.
+     * Vérifie si un déplacement d'une pièce du joueur de la case de départ à la case d'arrivée est légal en simulant le déplacement, vérifiant si le roi du joueur est en échec après le déplacement, puis annulant la simulation pour restaurer l'état du plateau.
+     * @param joueur Le joueur qui effectue le déplacement
+     * @param depart La case de départ du déplacement
+     * @param arrivee La case d'arrivée du déplacement
+     * @param plateau Le plateau de jeu
+     * @return true si le déplacement est légal (ne laisse pas le roi du joueur en échec), false sinon
      */
-    private boolean isLegalMove(Utilisateur joueur, Case depart, Case arrivee, Plateau plateau) {
+    public boolean isLegalMove(Utilisateur joueur, Case depart, Case arrivee, Plateau plateau) {
         Piece pieceDepart = depart.getPiece();
         if (pieceDepart == null) {
             return false;
@@ -254,7 +293,6 @@ public class Partie implements PartieSubject {
         int[] indexDepart = plateau.getIndexCase(depart);
         int[] indexArrivee = plateau.getIndexCase(arrivee);
 
-        // Simule la capture en passant pour un pion qui capture sur une case vide en diagonale.
         if (pieceDepart instanceof Pion && pieceArrivee == null && indexDepart != null && indexArrivee != null
                 && indexDepart[0] != indexArrivee[0] && indexDepart[1] != indexArrivee[1]) {
             caseCaptureEnPassant = plateau.getCase(indexDepart[0], indexArrivee[1], indexDepart[2]);
@@ -269,7 +307,6 @@ public class Partie implements PartieSubject {
 
         boolean legal = !echec(joueur);
 
-        // Rollback de la simulation.
         arrivee.setPiece(pieceArrivee);
         depart.setPiece(pieceDepart);
         if (caseCaptureEnPassant != null) {

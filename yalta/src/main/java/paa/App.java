@@ -35,6 +35,10 @@ public class App extends Application {
         Platform.runLater(gameRoot::resizeBoard);
     }
 
+    public void changeToMenu() {
+        mainScene.setRoot(createMenuRoot());
+    }
+
     private Parent createMenuRoot() {
         Main menu = new Main(this);
         return menu;
@@ -42,8 +46,6 @@ public class App extends Application {
 
     private void createBoardRoot() {
         gameRoot = new GameView();
-        //gameRoot.widthProperty().addListener((obs, oldVal, newVal) -> gameRoot.resizeBoard());
-        //gameRoot.heightProperty().addListener((obs, oldVal, newVal) -> gameRoot.resizeBoard());
     }
 
     public static void main(String[] args) {

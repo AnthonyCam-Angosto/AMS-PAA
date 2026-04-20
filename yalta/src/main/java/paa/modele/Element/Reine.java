@@ -139,5 +139,12 @@ public class Reine extends Piece {
         }
         return pivots.size() >= 2;
     }
+
+    @Override
+    public Piece copy() {
+        Reine copie = new Reine(this.getCouleur(), this.switchPartieStrategy, this.diagonalSwitchPartie);
+        copie.setHasMoved(this.hasMoved());
+        return copie;
+    }
     
 }

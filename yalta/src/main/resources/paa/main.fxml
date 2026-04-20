@@ -30,6 +30,10 @@
             style="-fx-font-family: 'Consolas'; -fx-font-size: 20; -fx-font-weight: bold; -fx-padding: 16 32 16 32; -fx-background-color: linear-gradient(to bottom, #4da6ff, #2d7fd1); -fx-text-fill: #ffffff; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand;" 
             onAction="#handleCellClick" />
 
+        <Button fx:id="fullscreenButton" prefHeight="48" prefWidth="280" text="PLEIN ECRAN"
+            style="-fx-font-family: 'Consolas'; -fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 12 28 12 28; -fx-background-color: linear-gradient(to bottom, #24365f, #162342); -fx-text-fill: #dbe9ff; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #4da6ff; -fx-border-width: 1.5; -fx-cursor: hand;"
+            onAction="#handleFullscreenClick" />
+
 
     </children>
     <padding>

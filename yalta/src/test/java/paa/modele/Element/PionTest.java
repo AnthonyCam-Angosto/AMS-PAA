@@ -101,4 +101,38 @@ public class PionTest {
         assertTrue(caseVulnerable.isEmpty(), "Le pion capturable doit être retiré du plateau.");
     }
 
+    private void remplirPlateauPourManger() {
+        Plateau p = Plateau.getInstance();
+        for(int x = 0; x < 4; x++) {
+            for (int y = 0; y < 8; y++) {
+                for (int z = 0; z < 3; z++) {
+                    Case c = p.getCase(x, y, z);
+                    if (c.isEmpty()) {
+                        c.setPiece(new Pion(Couleur.NOIR, new StandardSwitchPartieStrategy()));
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    void testMangerF4(){
+        Case casePion = plateau.getCaseById("F4");
+        List<String> casesTest = List.of("E9","G9");
+
+        Pion pion = new Pion(Couleur.BLANC, new StandardSwitchPartieStrategy());
+        pion.setHasMoved(true);
+        casePion.setPiece(pion);
+        remplirPlateauPourManger();
+
+        List<Case> captures = pion.manger(plateau, plateau.getIndexCase(casePion));
+        System.out.println("Captures possibles pour le pion en F4 : " + captures.stream().map(Case::getId).toList());
+        assertEquals(2, captures.size(), "Le pion doit pouvoir capturer sur les cases E9 et G9.");
+        for (Case c : captures) {
+            assertTrue(casesTest.contains(c.getId()), "Les cases de capture doivent être E9 ou G9 :"+c.getId());
+        }
+    }
+
+
+
 }

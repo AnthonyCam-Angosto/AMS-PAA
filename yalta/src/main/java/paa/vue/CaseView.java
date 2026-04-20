@@ -7,11 +7,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
+import paa.CaseObserver;
+import paa.controler.PromotionControlleur;
 import paa.modele.Couleur;
 import paa.modele.Element.Piece;
 import paa.modele.TypeAction;
 import paa.modele.plateau.Case;
-import paa.modele.plateau.Plateau;
 
 public class CaseView extends Polygon implements CaseObserver {
 
@@ -27,11 +28,10 @@ public class CaseView extends Polygon implements CaseObserver {
 
         group.getChildren().removeIf(node -> node instanceof PieceView && node.getUserData() != null && node.getUserData().equals(this.getId()));
 
-        if (piece == null || piece.getView() == null) {
+        if (piece == null) {
             return;
         }
-
-        PieceView pieceView = piece.getView();
+        PieceView pieceView = new PieceView(piece.getClass().getSimpleName(), piece.getCouleur());
         pieceView.setUserData(this.getId());
         pieceView.setMouseTransparent(true);
 
@@ -113,10 +113,10 @@ public class CaseView extends Polygon implements CaseObserver {
         configurePromotionButton(popup.getBishopButton(), pieceColor, "fou");
         configurePromotionButton(popup.getKnightButton(), pieceColor, "cavalier");
 
-        popup.getQueenButton().setOnAction(event -> finaliserPromotion(group, popup, c, "reine"));
-        popup.getRookButton().setOnAction(event -> finaliserPromotion(group, popup, c, "tour"));
-        popup.getBishopButton().setOnAction(event -> finaliserPromotion(group, popup, c, "fou"));
-        popup.getKnightButton().setOnAction(event -> finaliserPromotion(group, popup, c, "cavalier"));
+        popup.getQueenButton().setOnAction(new PromotionControlleur(group, popup, c, "reine"));
+        popup.getRookButton().setOnAction(new PromotionControlleur(group, popup, c, "tour"));
+        popup.getBishopButton().setOnAction(new PromotionControlleur(group, popup, c, "fou"));
+        popup.getKnightButton().setOnAction(new PromotionControlleur(group, popup, c, "cavalier"));
 
         group.getChildren().add(popup);
         popup.applyCss();
@@ -142,11 +142,6 @@ public class CaseView extends Polygon implements CaseObserver {
         icon.setFitHeight(34.0);
         button.setGraphic(icon);
         button.setText("");
-    }
-
-    private void finaliserPromotion(Group group, PromotionPopupView popup, Case casePromotion, String type) {
-        group.getChildren().remove(popup);
-        Plateau.getInstance().finPromotion(casePromotion, type);
     }
 
 }

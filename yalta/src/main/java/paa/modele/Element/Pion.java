@@ -3,7 +3,6 @@ package paa.modele.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import paa.modele.Couleur;
 import paa.modele.Partie;
 import paa.modele.deplacement.SwitchPartieStrategy;
@@ -38,11 +37,11 @@ public class Pion extends Piece {
     public List<Case> deplacement(Plateau plateau, int[] indexActuel) {
         List<Case> deplacements = new ArrayList<>();
 
-        if (!hasMoved()) {
-            Case temp=plateau.getCase(indexActuel[0]+1, indexActuel[1], indexActuel[2]);
-            if(temp.isEmpty()){
+        if (!hasMoved() && indexActuel[0] + 2 < 4) {
+            Case temp = plateau.getCase(indexActuel[0] + 1, indexActuel[1], indexActuel[2]);
+            if (temp != null && temp.isEmpty()) {
                 Case c = plateau.getCase(indexActuel[0] + 2, indexActuel[1], indexActuel[2]);
-                if (c.isEmpty()) {
+                if (c != null && c.isEmpty()) {
                     deplacements.add(c);
                     case2Id = c.getId();
                 }
@@ -56,17 +55,17 @@ public class Pion extends Piece {
 
         if(indexActuel[0]+1<4 && !hasChangedPartie(plateau, indexActuel)){
             Case c = plateau.getCase(indexActuel[0] + 1, indexActuel[1], indexActuel[2]);
-            if (c.isEmpty()) {
+            if (c != null && c.isEmpty()) {
                 deplacements.add(c);
             }
         }else if(!hasChangedPartie(plateau, indexActuel)){
             Case c=switchPartieStrategy.resolve(plateau,indexActuel,0);
-            if(c.isEmpty()){
+            if(c != null && c.isEmpty()){
                 deplacements.add(c);
             }
-        }else{
+        }else if(indexActuel[0] - 1 >= 0){
             Case c = plateau.getCase(indexActuel[0] -1, indexActuel[1], indexActuel[2]);
-            if (c.isEmpty()) {
+            if (c != null && c.isEmpty()) {
                 deplacements.add(c);
             }
         }
@@ -90,10 +89,9 @@ public class Pion extends Piece {
 
                 Case c = switchPartieStrategy.resolve(plateau, indexActuel, i);
                 ajouterCaptureOuEnPassant(plateau, indexActuel, i, c, captures);
-                c=switchPartieStrategy.resolveSpecial(plateau, indexActuel, i);
                 ajouterCaptureOuEnPassant(plateau, indexActuel, i, c, captures);
             }
-        }else{
+        }else if(indexActuel[0] - 1 >= 0){
             for (int i : range) {
                 if(indexActuel[1]+i<0 || indexActuel[1]+i>7) continue;
                 Case c = plateau.getCase(indexActuel[0] - 1, indexActuel[1] + i, indexActuel[2]);
@@ -199,6 +197,15 @@ public class Pion extends Piece {
         }
 
         return destinationsPromotion;
+    }
+
+    @Override
+    public Piece copy() {
+        Pion copie = new Pion(this.getCouleur(), this.switchPartieStrategy);
+        copie.setHasMoved(this.hasMoved());
+        copie.setEnPassant(this.enPassant);
+        copie.case2Id = this.case2Id;
+        return copie;
     }
 
 

@@ -5,8 +5,8 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class ActionSpecial implements ActionCase {
-    private Case caseSpecial;
-    private Case caseActuelle;
+    private final Case caseSpecial;
+    private final Case caseActuelle;
 
     public ActionSpecial(Case caseSpecial, Case caseActuelle) {
         this.caseSpecial = caseSpecial;
@@ -17,14 +17,12 @@ public class ActionSpecial implements ActionCase {
     public void click() {
         Piece piece = caseActuelle.getPiece();
         switch (piece.getValeur()) {
-            case 1://pion
+            case 1 -> //pion
                 Plateau.getInstance().promotion(caseActuelle, caseSpecial);
-                break;
-            case 1000://roi
+            case 1000 -> //roi
                 Plateau.getInstance().castling(caseActuelle, caseSpecial);
-                break;
-            default:
-                break;
+            default -> {
+            }
         }
     }
     

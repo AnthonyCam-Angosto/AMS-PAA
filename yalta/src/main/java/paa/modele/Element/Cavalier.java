@@ -191,5 +191,12 @@ public class Cavalier extends Piece {
             resultats.add(cible);
         }
     }
+
+    @Override
+    public Piece copy() {
+        Cavalier copie = new Cavalier(this.getCouleur(), this.switchPartieStrategy);
+        copie.setHasMoved(this.hasMoved());
+        return copie;
+    }
     
 }

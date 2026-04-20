@@ -34,7 +34,7 @@ public class Roi extends Piece {
         if(indexActuel[0]==3){
             for(int i=-1;i<=1;i++){
                 Case c=switchPartieStrategy.resolve(plateau,indexActuel,i);
-                if(c.isEmpty()){
+                if(c != null && c.isEmpty()){
                 deplacements.add(c);
                 }
             }
@@ -62,7 +62,7 @@ public class Roi extends Piece {
         if(indexActuel[0]==3){
             for(int i=-1;i<=1;i++){
                 Case c=switchPartieStrategy.resolve(plateau,indexActuel,i);
-                if(!c.isEmpty() && c.getPiece().getCouleur() != this.getCouleur()){
+                if(c != null && !c.isEmpty() && c.getPiece().getCouleur() != this.getCouleur()){
                 captures.add(c);
                 }
             }
@@ -130,6 +130,13 @@ public class Roi extends Piece {
         }
 
         return caseTour;
+    }
+
+    @Override
+    public Piece copy() {
+        Roi copie = new Roi(this.getCouleur(), this.switchPartieStrategy);
+        copie.setHasMoved(this.hasMoved());
+        return copie;
     }
 
 }

@@ -1,7 +1,7 @@
 package paa.modele.plateau;
 
+import paa.CaseObserver;
 import paa.modele.TypeAction;
-import paa.vue.CaseObserver;
 
 /**
  * Représente un sujet de la case du plateau de jeu

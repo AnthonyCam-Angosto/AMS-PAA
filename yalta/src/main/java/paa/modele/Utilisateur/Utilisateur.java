@@ -43,8 +43,8 @@ public abstract class Utilisateur implements PartieObserver {
     }
 
     /**
-     * Template Method: flux unique de gestion d'un changement de tour.
-     * Les sous-classes ne définissent que les etapes variables via jouer().
+     * Méthode appelée lorsqu'un changement de tour est détecté.
+     * @param joueur Le joueur dont c'est le tour
      */
     @Override
     public final void onTourChange(Utilisateur joueur) {
@@ -54,7 +54,11 @@ public abstract class Utilisateur implements PartieObserver {
         }
 
         tour=true;
-        jouer();
+        if(echec){
+            echec();
+        }else{
+            jouer();
+        }
     }
 
 

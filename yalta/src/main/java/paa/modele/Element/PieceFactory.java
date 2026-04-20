@@ -3,7 +3,6 @@ package paa.modele.Element;
 import paa.modele.Couleur;
 import paa.modele.deplacement.DiagonalSwitchPartieStrategy;
 import paa.modele.deplacement.SwitchPartieStrategy;
-import paa.vue.PieceView;
 
 /**
  * Fabrique concrete de pieces du jeu.
@@ -26,7 +25,6 @@ public class PieceFactory {
             case "roi" -> new Roi(couleur, switchPartieStrategy);
             default -> throw new IllegalArgumentException("Type de piece inconnu: " + type);
         };
-        piece.createView(new PieceView(type, couleur));
         return piece;
     }
 }

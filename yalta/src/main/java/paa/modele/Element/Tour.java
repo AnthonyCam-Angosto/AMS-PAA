@@ -11,7 +11,7 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Tour extends Piece {
-    private PathStrategy pathStrategy;
+    private final PathStrategy pathStrategy;
 
     public Tour( Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
         super(5, couleur,switchPartieStrategy);
@@ -62,5 +62,13 @@ public class Tour extends Piece {
             }
         }
         return captures;
-    }    
+    }  
+    
+    
+    @Override
+    public Piece copy() {
+        Tour copie = new Tour(this.getCouleur(), this.switchPartieStrategy);
+        copie.setHasMoved(this.hasMoved());
+        return copie;
+    }
 }

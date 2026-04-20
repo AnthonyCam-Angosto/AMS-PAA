@@ -6,18 +6,19 @@ import paa.controler.ActionDeplacementPossible;
 import paa.controler.ActionManger;
 import paa.controler.ActionSpecial;
 import paa.modele.Couleur;
+import paa.modele.Partie;
+import paa.modele.Prototype;
+import paa.modele.Utilisateur.Utilisateur;
 import paa.modele.deplacement.SwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
-import paa.vue.PieceView;
 
 /**
  * Classe abstraite représentant une pièce du jeu
  */
-public abstract class Piece {
+public abstract class Piece implements Prototype<Piece> {
     protected  int valeur;
     protected Couleur couleur;
-    protected PieceView view;
     protected SwitchPartieStrategy switchPartieStrategy;
     protected boolean hasMoved;
 
@@ -28,16 +29,8 @@ public abstract class Piece {
         this.hasMoved = false;
     }
 
-    public void createView(PieceView view) {
-        this.view = view;
-    }
-
     public int getValeur() {
         return valeur;
-    }
-
-    public PieceView getView() {
-        return view;
     }
 
     public Couleur getCouleur() {
@@ -53,6 +46,13 @@ public abstract class Piece {
     }
 
     /**
+     * Crée une copie logique de la pièce sans la vue graphique.
+     * @return une nouvelle pièce avec le même état utile pour les simulations
+     */
+    @Override
+    public abstract Piece copy();
+
+    /**
      * Met à jour les actions disponibles des cases  selon les actions possibles de la pièce sur la case actuelle, en tenant compte des déplacements, des captures et des promotions.
      * @param caseActuelle la case sur laquelle la pièce est actuellement positionnée
      */
@@ -62,12 +62,16 @@ public abstract class Piece {
 
         List<Case> deplacements = deplacement(plateau, indexActuel);
         for (Case c : deplacements) {
-            c.setAction(new ActionDeplacementPossible(c, caseActuelle));
+            if (isLegalMove(caseActuelle, c, plateau)) {
+                c.setAction(new ActionDeplacementPossible(c, caseActuelle));
+            }
         }
 
         List<Case> captures = manger(plateau, indexActuel);
         for (Case c : captures) {
-            c.setAction(new ActionManger(c,caseActuelle));
+            if (isLegalMove(caseActuelle, c, plateau)) {
+                c.setAction(new ActionManger(c,caseActuelle));
+            }
         }
 
         List<Case> specialCases = specials(plateau, indexActuel);
@@ -76,8 +80,33 @@ public abstract class Piece {
         }
     } 
 
-    protected List<Case> specials(Plateau plateau, int[] indexActuel){
+    public List<Case> specials(Plateau plateau, int[] indexActuel){
         return List.of();
+    }
+
+    /**
+     * Verifie qu'un coup conserve le roi du joueur en securite.
+     * @param depart case de depart
+     * @param arrivee case d'arrivee
+     * @param plateau plateau de jeu
+     * @return true si le coup est legal
+     */
+    public boolean isLegalMove(Case depart, Case arrivee, Plateau plateau) {
+        Partie partie = Partie.getInstance();
+        Utilisateur joueur = null;
+
+        for (Utilisateur candidat : partie.getJoueurs()) {
+            if (candidat != null && candidat.getCouleur() == this.couleur) {
+                joueur = candidat;
+                break;
+            }
+        }
+
+        if (joueur == null) {
+            return false;
+        }
+
+        return partie.isLegalMove(joueur, depart, arrivee, plateau);
     }
 
     /**

@@ -1,13 +1,17 @@
 package paa.modele.plateau;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import paa.modele.Couleur;
+import paa.modele.Element.Piece;
+import paa.modele.Element.Tour;
 import paa.modele.deplacement.DiagonalPathStrategy;
 import paa.modele.deplacement.DiagonalSwitchPartieStrategy;
 import paa.modele.deplacement.LinePathStrategy;
@@ -67,6 +71,27 @@ class PlateauTest {
 
         diagonal = diagonalPathStrategy.getPath(plateau, index, 1, diagonalSwitch);
         assertIds(diagonal, "A2", "B3", "C4", "D5", "I6", "J7", "K8");
+    }
+
+    @Test
+    void copy_creeUnPlateauIndependant() {
+        Case caseSource = plateau.getCaseById("A1");
+        Piece pieceSource = new Tour(Couleur.BLANC, standardSwitch);
+        caseSource.setPiece(pieceSource);
+
+        Plateau copie = plateau.copy();
+
+        assertNotSame(plateau, copie);
+        assertNotSame(plateau.getCaseById("A1"), copie.getCaseById("A1"));
+        assertNotSame(plateau.getCaseById("A1").getPiece(), copie.getCaseById("A1").getPiece());
+        assertEquals(plateau.getCaseById("A1").getPiece().getClass(), copie.getCaseById("A1").getPiece().getClass());
+
+        copie.deplacementPiece(copie.getCaseById("A1"), copie.getCaseById("A2"), true);
+
+        assertEquals(pieceSource, plateau.getCaseById("A1").getPiece());
+        assertNull(plateau.getCaseById("A2").getPiece());
+        assertNull(copie.getCaseById("A1").getPiece());
+        assertNotSame(plateau.getCaseById("A1").getPiece(), copie.getCaseById("A2").getPiece());
     }
    
     private static void resetPlateauSingleton() throws Exception {

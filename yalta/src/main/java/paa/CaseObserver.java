@@ -1,4 +1,4 @@
-package paa.vue;
+package paa;
 
 import paa.modele.TypeAction;
 import paa.modele.plateau.Case;

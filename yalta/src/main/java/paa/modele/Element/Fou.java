@@ -10,7 +10,7 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 public class Fou extends Piece {
-    private DiagonalPathStrategy diagonalPathStrategy;
+    private final DiagonalPathStrategy diagonalPathStrategy;
 
     public Fou(Couleur couleur,SwitchPartieStrategy switchPartieStrategy) {
         super(3, couleur,switchPartieStrategy);
@@ -87,6 +87,13 @@ public class Fou extends Piece {
             }
         }
         return pivots.size() >= 2;
+    }
+
+    @Override
+    public Piece copy() {
+        Fou copie = new Fou(this.getCouleur(), this.switchPartieStrategy);
+        copie.setHasMoved(this.hasMoved());
+        return copie;
     }
     
 }

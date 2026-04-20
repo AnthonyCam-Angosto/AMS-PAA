@@ -3,17 +3,18 @@ package paa.modele.plateau;
 import java.util.ArrayList;
 import java.util.List;
 
+import paa.CaseObserver;
 import paa.controler.ActionCase;
 import paa.controler.ActionPiece;
 import paa.controler.ActionVide;
-import paa.modele.TypeAction;
 import paa.modele.Element.Piece;
-import paa.vue.CaseObserver;
+import paa.modele.Prototype;
+import paa.modele.TypeAction;
 
 /**
  * Représente une case du plateau de jeu
  */
-public class Case implements CaseComponent, CaseSubject {
+public class Case implements CaseComponent, CaseSubject,Prototype<Case> {
     private String id;
     private ActionCase action;
     private Piece piece;
@@ -127,6 +128,15 @@ public class Case implements CaseComponent, CaseSubject {
     @Override
     public String toString() {
         return id;
+    }
+
+    @Override
+    public Case copy() {
+        Case copie = new Case(this.id);
+        if (this.piece != null) {
+            copie.setPiece(this.piece.copy());
+        }
+        return copie;
     }
 
     

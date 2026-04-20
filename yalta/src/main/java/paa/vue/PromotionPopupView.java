@@ -12,22 +12,22 @@ public class PromotionPopupView extends VBox implements LoadFxml {
     private static final String PROMOTION_FXML_PATH = "/paa/promotion-popup.fxml";
 
     @FXML
-    private Label titleLabel;
+    protected Label titleLabel;
 
     @FXML
-    private Label subtitleLabel;
+    protected Label subtitleLabel;
 
     @FXML
-    private Button queenButton;
+    protected Button queenButton;
 
     @FXML
-    private Button rookButton;
+    protected Button rookButton;
 
     @FXML
-    private Button bishopButton;
+    protected Button bishopButton;
 
     @FXML
-    private Button knightButton;
+    protected Button knightButton;
 
     public PromotionPopupView() {
         loadFromFxml();

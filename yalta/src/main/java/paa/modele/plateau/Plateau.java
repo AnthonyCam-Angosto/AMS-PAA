@@ -11,16 +11,17 @@ import paa.modele.Couleur;
 import paa.modele.Element.Piece;
 import paa.modele.Element.PieceFactory;
 import paa.modele.Element.Pion;
+import paa.modele.Partie;
+import paa.modele.Prototype;
 import paa.modele.deplacement.DiagonalSwitchPartieStrategy;
 import paa.modele.deplacement.StandardSwitchPartieStrategy;
 import paa.modele.deplacement.SwitchPartieStrategy;
-import paa.modele.Partie;
 
 /**
  * Représente le plateau de jeu, composé de 3 parties de 4x8 cases chacune, et gère les pièces et les déplacements sur le plateau.
  * Le plateau est implémenté en tant que singleton pour garantir qu'il n'y ait qu'une seule instance de plateau dans le jeu.
  */
-public class Plateau implements CaseComponent {
+public class Plateau implements CaseComponent, Prototype<Plateau> {
     private final Case[][][] cases;
 
     private static Plateau instance = null;
@@ -155,20 +156,38 @@ public class Plateau implements CaseComponent {
     }
 
     /**
+     * Crée une copie profonde du plateau, sans observateurs ni état graphique.
+     * Cette copie est destinée aux simulations de l'IA.
+     * @return un nouveau plateau indépendant du singleton courant
+     */
+    @Override
+    public Plateau copy() {
+        Plateau copie = new Plateau();
+
+        for (int k = 0; k < 3; k++) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 8; j++) {
+                    copie.cases[i][j][k] = this.cases[i][j][k].copy();
+                }
+            }
+        }
+        return copie;
+    }
+
+    /**
      * Déplace une pièce d'une case de départ vers une case d'arrivée, en mettant à jour les pièces sur les cases et en gérant les tours de jeu.
      * @param caseDepart Case de départ
      * @param caseArrivee Case d'arrivée
-     * @param isSpecial Indique si le déplacement est spécial
+     * @param notTurn Indique si le déplacement n'est pas un tour de jeu
      */
-    public void deplacementPiece(Case caseDepart, Case caseArrivee,boolean isSpecial) {
+    public void deplacementPiece(Case caseDepart, Case caseArrivee,boolean notTurn) {
         Piece piece = caseDepart.getPiece();
         if (piece != null) {
             if (piece instanceof Pion && caseArrivee.isEmpty()) {
                 capturerEnPassant(caseDepart, caseArrivee);
             }
             piece.setHasMoved(true);
-            if(piece instanceof Pion){
-                Pion pion = (Pion) piece;
+            if(piece instanceof Pion pion){
                 if(pion.getEnPassantId()!=null && pion.getEnPassantId().equals(caseArrivee.getId())){
                     pion.setEnPassant(true);
                 }
@@ -177,7 +196,7 @@ public class Plateau implements CaseComponent {
             caseDepart.setPiece(null);
         }
         deselectionner();
-        if(!isSpecial){
+        if(!notTurn){
             Partie.getInstance().tourSuivant();
         }
     }

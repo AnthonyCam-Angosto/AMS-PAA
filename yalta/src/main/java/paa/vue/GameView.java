@@ -4,17 +4,22 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import paa.controler.EndGameController;
 import paa.modele.Couleur;
 import paa.modele.Partie;
 import paa.modele.PartieObserver;
 import paa.modele.TypeFin;
+import paa.modele.Utilisateur.IA;
 import paa.modele.Utilisateur.Utilisateur;
 
 /**
@@ -24,45 +29,56 @@ public class GameView extends VBox implements PartieObserver {
     private static final double BOARD_BASE_WIDTH = 960.0;
     private static final double BOARD_BASE_HEIGHT = 831.3843876330611;
     private static final double FIT_MARGIN = 24.0;
+    private static final double BOARD_VERTICAL_OFFSET = -14.0;
+    private static final double SCREEN_RESERVED_VERTICAL_SPACE = 130.0;
     private static final String FXML_PATH = "/paa/gameView.fxml";
     private static final String CARD_INACTIVE_STYLE = "-fx-background-color: #1a2847; -fx-background-radius: 10; -fx-border-color: #4da6ff; -fx-border-width: 1; -fx-border-radius: 10; -fx-padding: 8 10 8 10;";
     private static final String CARD_ACTIVE_STYLE = "-fx-background-color: #254080; -fx-background-radius: 10; -fx-border-color: #ffff00; -fx-border-width: 3; -fx-border-radius: 10; -fx-padding: 8 10 8 10;";
 
     @FXML
-    private StackPane boardContainer;
+    protected StackPane boardContainer;
 
     @FXML
-    private Label titleLabel;
+    protected Label titleLabel;
 
     @FXML
-    private PlateauView plateauView;
+    protected PlateauView plateauView;
 
     @FXML
-    private HBox whiteCard;
+    protected HBox whiteCard;
 
     @FXML
-    private HBox blackCard;
+    protected HBox blackCard;
 
     @FXML
-    private HBox redCard;
+    protected HBox redCard;
 
     @FXML
-    private ImageView whiteKingIcon;
+    protected ImageView whiteKingIcon;
 
     @FXML
-    private ImageView blackKingIcon;
+    protected ImageView blackKingIcon;
 
     @FXML
-    private ImageView redKingIcon;
+    protected ImageView redKingIcon;
 
     @FXML
-    private Label whiteCheckLabel;
+    protected Label whiteCheckLabel;
 
     @FXML
-    private Label blackCheckLabel;
+    protected Label blackCheckLabel;
 
     @FXML
-    private Label redCheckLabel;
+    protected Label redCheckLabel;
+
+    @FXML
+    protected Label whiteAiLabel;
+
+    @FXML
+    protected Label blackAiLabel;
+
+    @FXML
+    protected Label redAiLabel;
 
     private EndGamePopupView endGamePopup;
 
@@ -90,7 +106,7 @@ public class GameView extends VBox implements PartieObserver {
             }
 
             VBox.setVgrow(boardContainer, Priority.ALWAYS);
-            boardContainer.setTranslateY(-50);
+            boardContainer.setTranslateY(BOARD_VERTICAL_OFFSET);
             boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> resizeBoard());
             boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> resizeBoard());
             resizeBoard();
@@ -98,7 +114,7 @@ public class GameView extends VBox implements PartieObserver {
     }
 
     @FXML
-    private void initialize() {
+    protected void initialize() {
         loadKingIcons();
 
         Partie partie = Partie.getInstance();
@@ -106,6 +122,8 @@ public class GameView extends VBox implements PartieObserver {
             partie.addObserver(this);
             observerRegistered = true;
         }
+
+        updateAiIndicators();
 
         try {
             updateTurnIndicator(partie.getCouleurJoueurActuel());
@@ -141,6 +159,9 @@ public class GameView extends VBox implements PartieObserver {
         double ratioWidth = availableWidth / BOARD_BASE_WIDTH;
         double ratioHeight = availableHeight / BOARD_BASE_HEIGHT;
         double scale = Math.min(ratioWidth, ratioHeight);
+
+        // Limite de taille selon la hauteur d'ecran utile (hors barre des taches).
+        scale = Math.min(scale, getScreenConstrainedScale());
         scale = Math.min(scale, 1.0);
 
         if (scale <= 0) {
@@ -149,6 +170,23 @@ public class GameView extends VBox implements PartieObserver {
 
         plateauView.setScaleX(scale);
         plateauView.setScaleY(scale);
+    }
+
+    private double getScreenConstrainedScale() {
+        if (getScene() == null || getScene().getWindow() == null) {
+            return 1.0;
+        }
+
+        Stage stage = (Stage) getScene().getWindow();
+        Rectangle2D windowBounds = new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+        Screen screen = Screen.getScreensForRectangle(windowBounds)
+                .stream()
+                .findFirst()
+                .orElse(Screen.getPrimary());
+
+        double usableScreenHeight = screen.getVisualBounds().getHeight();
+        double maxBoardHeight = Math.max(BOARD_BASE_HEIGHT * 0.55, usableScreenHeight - SCREEN_RESERVED_VERTICAL_SPACE);
+        return maxBoardHeight / BOARD_BASE_HEIGHT;
     }
 
     private void loadKingIcons() {
@@ -175,12 +213,16 @@ public class GameView extends VBox implements PartieObserver {
         blackCard.setStyle(CARD_INACTIVE_STYLE);
         redCard.setStyle(CARD_INACTIVE_STYLE);
 
-        if (couleurActive == Couleur.BLANC) {
-            whiteCard.setStyle(CARD_ACTIVE_STYLE);
-        } else if (couleurActive == Couleur.NOIR) {
-            blackCard.setStyle(CARD_ACTIVE_STYLE);
-        } else if (couleurActive == Couleur.ROUGE) {
-            redCard.setStyle(CARD_ACTIVE_STYLE);
+        switch (couleurActive) {
+            case BLANC:
+                whiteCard.setStyle(CARD_ACTIVE_STYLE);
+                break;
+            case NOIR:
+                blackCard.setStyle(CARD_ACTIVE_STYLE);
+                break;
+            case ROUGE:
+                redCard.setStyle(CARD_ACTIVE_STYLE);
+                break;
         }
 
         // Update check indicators for all players
@@ -206,12 +248,34 @@ public class GameView extends VBox implements PartieObserver {
         }
     }
 
+    private void updateAiIndicators() {
+        Partie partie = Partie.getInstance();
+        Utilisateur[] joueurs = partie.getJoueurs();
+
+        updateAiIndicatorLabel(whiteAiLabel, joueurs[0]);
+        updateAiIndicatorLabel(blackAiLabel, joueurs[1]);
+        updateAiIndicatorLabel(redAiLabel, joueurs[2]);
+    }
+
+    private void updateAiIndicatorLabel(Label aiLabel, Utilisateur joueur) {
+        if (aiLabel == null) {
+            return;
+        }
+
+        boolean isAi = joueur instanceof IA;
+        aiLabel.setVisible(isAi);
+        aiLabel.setManaged(isAi);
+    }
+
     @Override
     public void onTourChange(Utilisateur joueur) {
         if (joueur == null) {
             return;
         }
-        Platform.runLater(() -> updateTurnIndicator(joueur.getCouleur()));
+        Platform.runLater(() -> {
+            updateAiIndicators();
+            updateTurnIndicator(joueur.getCouleur());
+        });
     }
 
     @Override
@@ -230,9 +294,10 @@ public class GameView extends VBox implements PartieObserver {
             endGamePopup.setPickOnBounds(true);
             StackPane.setMargin(endGamePopup, new Insets(12));
 
-            endGamePopup.getCloseButton().setOnAction(event -> boardContainer.getChildren().remove(endGamePopup));
-            endGamePopup.getMenuButton().setOnAction(event -> boardContainer.getChildren().remove(endGamePopup));
-            endGamePopup.getRestartButton().setOnAction(event -> boardContainer.getChildren().remove(endGamePopup));
+            paa.App app = getApp();
+            endGamePopup.getCloseButton().setOnAction(new EndGameController(app, EndGameController.typeAction.QUIT));
+            endGamePopup.getMenuButton().setOnAction(new EndGameController(app, EndGameController.typeAction.MENU));
+            endGamePopup.getRestartButton().setOnAction(new EndGameController(app, EndGameController.typeAction.RESTART));
         }
 
         TypeFin fin = typeFin != null ? typeFin : TypeFin.NULLE;
@@ -267,5 +332,22 @@ public class GameView extends VBox implements PartieObserver {
             boardContainer.getChildren().add(endGamePopup);
         }
         endGamePopup.toFront();
+    }
+
+    @FXML
+    protected void handleFullscreenClick() {
+        if (getScene() == null || getScene().getWindow() == null) {
+            return;
+        }
+
+        Stage stage = (Stage) getScene().getWindow();
+        stage.setFullScreen(true);
+    }
+
+    private paa.App getApp() {
+        if (getScene() != null && getScene().getRoot() instanceof Main) {
+            return ((Main) getScene().getRoot()).getApp();
+        }
+        return null;
     }
 }
