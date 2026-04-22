@@ -38,10 +38,10 @@ public class MenuControlleur{
     protected void handleCellClick(ActionEvent event) {
         int playerCount = playerCountSpinner.getValue();
         System.out.println("Nombre de joueurs selectionne : " + playerCount);
+        main.getApp().changeToBoard();
         Partie partie = Partie.getInstance();
         partie.initialiserPartie(playerCount);
 
-        main.getApp().changeToBoard();
     }
 
     /**

@@ -155,8 +155,7 @@ class PartieTest {
 
         @Override
         public Piece copy() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'copy'");
+            return new PieceImmobile(getCouleur());
         }
     }
 

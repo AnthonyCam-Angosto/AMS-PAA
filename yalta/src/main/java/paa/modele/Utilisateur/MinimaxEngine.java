@@ -13,8 +13,6 @@ import paa.modele.plateau.Plateau;
  * Moteur de calcul Minimax mutualise entre l'IA et les threads d'evaluation.
  */
 public class MinimaxEngine extends  IAEngine {
-    //TODO:  manque les coups spéciaux (promotion, roque, prise en passant)
-
     public MinimaxEngine(Couleur couleurIA) {
         super(couleurIA);
     }
@@ -22,7 +20,7 @@ public class MinimaxEngine extends  IAEngine {
     @Override
     public int evaluerCoup(Plateau plateau, Coup coup, int profondeur) {
         Plateau prochainEtat = plateau.copy();
-        appliquerCoup(prochainEtat, coup);
+        appliquerCoup(prochainEtat, coup, true);
         return minimax(prochainEtat, profondeur - 1, couleurSuivante(couleurIA));
     }
 
@@ -40,7 +38,7 @@ public class MinimaxEngine extends  IAEngine {
 
         for (Coup coup : coups) {
             Plateau prochainEtat = plateau.copy();
-            appliquerCoup(prochainEtat, coup);
+            appliquerCoup(prochainEtat, coup, true);
             int valeurCoup = minimax(prochainEtat, profondeur - 1, couleurSuivante(joueurCourant));
 
             if (estNoeudMax) {

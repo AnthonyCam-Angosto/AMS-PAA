@@ -10,9 +10,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import paa.modele.Couleur;
-import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 /**
@@ -20,7 +19,8 @@ import paa.modele.plateau.Plateau;
  */
 public class IA extends Utilisateur {
 
-    private static final int PROFONDEUR_MINMAX = 3;
+    // La profondeur maximale du Min-Max
+    private static final int PROFONDEUR_MINMAX = 3; //maximun 3 pour éviter les temps de calcul trop longs
     private final IAEngine iAEngine;
 
     public IA(Couleur couleur) {
@@ -31,20 +31,27 @@ public class IA extends Utilisateur {
     @Override
     public void jouer() {
         System.out.println("IA " + getCouleur() + " : réflexion en cours...");
-        PauseTransition pause = new PauseTransition(javafx.util.Duration.seconds(0.01));
-        pause.setOnFinished(event -> {
+        Thread thread = new Thread(() -> {
             boolean coupJoue = jouerMeilleurCoup(PROFONDEUR_MINMAX);
             if (!coupJoue) {
                 throw new RuntimeException("IA " + getCouleur() + " : aucun coup légal trouvé.");
             }
-
         });
-        pause.play();
+        thread.start();
     }
+
+
 
     @Override
     public void echec() {
-        jouerMeilleurCoup(PROFONDEUR_MINMAX + 1);
+        System.out.println("IA " + getCouleur() + " : reflexion en cours...(echec)");
+        Thread thread = new Thread(() -> {
+            boolean coupJoue = jouerMeilleurCoup(PROFONDEUR_MINMAX+1);
+            if (!coupJoue) {
+                throw new RuntimeException("IA " + getCouleur() + " : aucun coup legal trouvé.");
+            }
+        });
+        thread.start();
     }
 
     private Coup trouverMeilleurCoupThread(Plateau plateau, int profondeur) {
@@ -113,9 +120,7 @@ public class IA extends Utilisateur {
         }
 
         Plateau plateauReel = Plateau.getInstance();
-        Case depart = plateauReel.getCaseById(meilleurCoup.departId);
-        Case arrivee = plateauReel.getCaseById(meilleurCoup.arriveeId);
-        plateauReel.deplacementPiece(depart, arrivee, false);
+        Platform.runLater(() -> iAEngine.appliquerCoup(plateauReel, meilleurCoup, false));
         return true;
     }
 }
