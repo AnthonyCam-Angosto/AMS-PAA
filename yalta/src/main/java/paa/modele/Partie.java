@@ -340,5 +340,14 @@ public class Partie implements PartieSubject {
         }
     }
 
+    public void reinitialiser() {
+        tour = -1;
+        partieFinie = false;
+        for (int i = 0; i < joueurs.length; i++) {
+            joueurs[i] = null;
+        }
+        Plateau.getInstance().reinitialiser();
+    }
+
     
 }

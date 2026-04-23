@@ -30,7 +30,6 @@ public class IA extends Utilisateur {
 
     @Override
     public void jouer() {
-        System.out.println("IA " + getCouleur() + " : réflexion en cours...");
         Thread thread = new Thread(() -> {
             boolean coupJoue = jouerMeilleurCoup(PROFONDEUR_MINMAX);
             if (!coupJoue) {
@@ -44,7 +43,6 @@ public class IA extends Utilisateur {
 
     @Override
     public void echec() {
-        System.out.println("IA " + getCouleur() + " : reflexion en cours...(echec)");
         Thread thread = new Thread(() -> {
             boolean coupJoue = jouerMeilleurCoup(PROFONDEUR_MINMAX+1);
             if (!coupJoue) {

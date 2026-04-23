@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import paa.App;
 import paa.controler.EndGameController;
 import paa.modele.Couleur;
 import paa.modele.Partie;
@@ -83,9 +84,11 @@ public class GameView extends VBox implements PartieObserver {
     private EndGamePopupView endGamePopup;
 
     private boolean observerRegistered;
+    private App app;
 
-    public GameView() {
+    public GameView(App app) {
         super();
+        this.app=app;
         this.setId("game-view");
         this.setAlignment(Pos.TOP_CENTER);
         this.setSpacing(28);
@@ -294,7 +297,6 @@ public class GameView extends VBox implements PartieObserver {
             endGamePopup.setPickOnBounds(true);
             StackPane.setMargin(endGamePopup, new Insets(12));
 
-            paa.App app = getApp();
             endGamePopup.getCloseButton().setOnAction(new EndGameController(app, EndGameController.typeAction.QUIT));
             endGamePopup.getMenuButton().setOnAction(new EndGameController(app, EndGameController.typeAction.MENU));
             endGamePopup.getRestartButton().setOnAction(new EndGameController(app, EndGameController.typeAction.RESTART));
@@ -342,12 +344,5 @@ public class GameView extends VBox implements PartieObserver {
 
         Stage stage = (Stage) getScene().getWindow();
         stage.setFullScreen(true);
-    }
-
-    private paa.App getApp() {
-        if (getScene() != null && getScene().getRoot() instanceof Main) {
-            return ((Main) getScene().getRoot()).getApp();
-        }
-        return null;
     }
 }

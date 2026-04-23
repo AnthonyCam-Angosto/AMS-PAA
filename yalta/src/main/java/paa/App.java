@@ -45,10 +45,14 @@ public class App extends Application {
     }
 
     private void createBoardRoot() {
-        gameRoot = new GameView();
+        gameRoot = new GameView(this);
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void reinitialiser() {
+        createBoardRoot();
     }
 }

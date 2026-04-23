@@ -22,7 +22,7 @@ import paa.modele.deplacement.SwitchPartieStrategy;
  * Le plateau est implémenté en tant que singleton pour garantir qu'il n'y ait qu'une seule instance de plateau dans le jeu.
  */
 public class Plateau implements CaseComponent, Prototype<Plateau> {
-    private final Case[][][] cases;
+    private Case[][][] cases;
 
     private static Plateau instance = null;
 
@@ -72,6 +72,13 @@ public class Plateau implements CaseComponent, Prototype<Plateau> {
                     cases[i][j][partie - 1] = new Case(lettre.charAt(j)+""+(ecart-i));
                 }
             }
+        }
+    }
+
+    public void reinitialiser(){
+        cases = new Case[4][8][3];
+        for (int i = 1; i < 4; i++) {
+            initCases(i);
         }
     }
 

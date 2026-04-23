@@ -3,6 +3,7 @@ package paa.controler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import paa.App;
+import paa.modele.Partie;
 
 public class EndGameController implements EventHandler<ActionEvent> {
     public enum typeAction {
@@ -22,12 +23,21 @@ public class EndGameController implements EventHandler<ActionEvent> {
     public void handle(ActionEvent arg0) {
         switch (action) {
             case RESTART:
+                if (app != null) {
+                    System.out.println("Redémarrage de la partie...");
+                    Partie.getInstance().reinitialiser();
+                    app.reinitialiser();
+                    app.changeToBoard();
+                }
                 break;
             case QUIT:
                 System.exit(0);
                 break;
             case MENU:
                 if (app != null) {
+                    System.out.println("revient au menu");
+                    Partie.getInstance().reinitialiser();
+                    app.reinitialiser();
                     app.changeToMenu();
                 }
                 break;
