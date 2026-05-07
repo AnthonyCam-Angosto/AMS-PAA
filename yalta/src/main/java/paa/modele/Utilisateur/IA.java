@@ -14,20 +14,21 @@ import javafx.application.Platform;
 import paa.modele.Couleur;
 import paa.modele.plateau.Plateau;
 
-/**
- * Représente une intelligence artificielle du jeu, basée sur Min-Max.
- */
+/** Représente une intelligence artificielle du jeu, basée sur Min-Max. */
 public class IA extends Utilisateur {
 
     // La profondeur maximale du Min-Max
-    private static final int PROFONDEUR_MINMAX = 3; //maximun 3 pour éviter les temps de calcul trop longs
+    private static final int PROFONDEUR_MINMAX = 4; //maximun 4 pour éviter les temps de calcul trop longs
     private final IAEngine iAEngine;
 
     public IA(Couleur couleur) {
         super(couleur);
-        this.iAEngine = new MinimaxEngine(couleur);
+        this.iAEngine = new AlphaBetaEngine(couleur);
     }
 
+    /**
+     * Fait jouer l'IA.
+     */
     @Override
     public void jouer() {
         Thread thread = new Thread(() -> {
@@ -41,6 +42,9 @@ public class IA extends Utilisateur {
 
 
 
+    /**
+     * Gère l'échec de l'IA en tentant de trouver le meilleur coup avec une profondeur augmentée.
+     */
     @Override
     public void echec() {
         Thread thread = new Thread(() -> {
@@ -52,6 +56,12 @@ public class IA extends Utilisateur {
         thread.start();
     }
 
+    /**
+     * Trouve le meilleur coup en utilisant un thread pour chaque coup légal, afin de paralléliser le calcul de l'IA
+     * @param plateau L'état actuel du plateau de jeu
+     * @param profondeur La profondeur maximale du Min-Max
+     * @return Le meilleur coup trouvé, ou null s'il n'y a aucun coup légal
+     */
     private Coup trouverMeilleurCoupThread(Plateau plateau, int profondeur) {
         List<Coup> coups = iAEngine.getLegalMoves(plateau, getCouleur());
         if (coups.isEmpty()) {
@@ -72,8 +82,11 @@ public class IA extends Utilisateur {
             threads.add(thread);
         }
         try {
+            long startTime = System.currentTimeMillis();
             List<Future<Integer>> results = executor.invokeAll(threads);
             shutdownAndAwaitTermination(executor);
+            long endTime = System.currentTimeMillis();
+            System.out.println("Temps de calcul : " + (endTime - startTime) + " ms");
             for (int i = 0; i < results.size(); i++) {
                 try {
                     int threadScore = results.get(i).get();
@@ -97,6 +110,10 @@ public class IA extends Utilisateur {
     }
 
 
+    /**
+     * Arrête proprement l'executor service en attendant la fin des tâches en cours.
+     * @param executorService L'executor service à arrêter
+     */
     private static void shutdownAndAwaitTermination(ExecutorService executorService) {
         executorService.shutdown();
         try {
@@ -109,6 +126,11 @@ public class IA extends Utilisateur {
         }
     }
 
+    /**
+     * Fait jouer l'IA en trouvant le meilleur coup à jouer.
+     * @param profondeur La profondeur maximale du Min-Max
+     * @return true si un coup a été joué, false sinon
+     */
     private boolean jouerMeilleurCoup(int profondeur) {
         Plateau etatInitial = Plateau.getInstance().copy();
         Coup meilleurCoup = trouverMeilleurCoupThread(etatInitial, profondeur);

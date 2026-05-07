@@ -13,6 +13,7 @@ import paa.modele.deplacement.StandardSwitchPartieStrategy;
 import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
+/** Représente un moteur d'intelligence artificielle pour le jeu. */
 public abstract class IAEngine {
     protected final Couleur couleurIA;
 
@@ -20,8 +21,21 @@ public abstract class IAEngine {
         this.couleurIA = couleurIA;
     }
 
+    /**
+     * Évalue un coup donné sur le plateau à une certaine profondeur de recherche.
+     * @param plateau Le plateau de jeu actuel
+     * @param coup Le coup à évaluer
+     * @param profondeur La profondeur de recherche pour l'évaluation du coup
+     * @return Un score représentant la qualité du coup pour l'IA (plus élevé est meilleur pour l'IA)
+     */
     abstract protected int evaluerCoup(Plateau plateau, Coup coup, int profondeur);
 
+    /**
+     * Génère une liste de tous les coups légaux possibles pour un joueur sur le plateau donné.
+     * @param plateau Le plateau de jeu actuel
+     * @param couleurJoueur La couleur du joueur pour whom générer les coups
+     * @return Une liste de tous les coups légaux possibles
+     */
     public List<Coup> getLegalMoves(Plateau plateau, Couleur couleurJoueur) {
         List<Coup> coups = new ArrayList<>();
         for (Case casePiece : plateau.getAllCasePiece()) {
@@ -59,6 +73,11 @@ public abstract class IAEngine {
         return coups;
     }
 
+    /**
+     * Détermine le type de coup spécial (roque ou promotion) en fonction de la pièce impliquée.
+     * @param piece La pièce pour laquelle déterminer le type de coup spécial
+     * @return Le type de coup spécial associé à la pièce (ROQUE pour un roi, PROMOTION pour un pion, NORMAL sinon)
+     */
     private Coup.Type getTypeSpecial(Piece piece) {
         if (piece instanceof Roi) {
             return Coup.Type.ROQUE;
@@ -69,6 +88,15 @@ public abstract class IAEngine {
         return Coup.Type.NORMAL;
     }
 
+    /**
+     * Vérifie si un coup est légal sur le plateau en tenant compte des règles du jeu, y compris les échecs et les coups spéciaux.
+     * @param couleurJoueur La couleur du joueur pour whom vérifier le coup
+     * @param depart La case de départ du coup
+     * @param arrivee La case d'arrivée du coup
+     * @param plateau Le plateau de jeu actuel
+     * @param typeCoup Le type de coup à vérifier
+     * @return true si le coup est légal, false sinon
+     */
     protected boolean isLegalMoveOnPlateau(Couleur couleurJoueur, Case depart, Case arrivee, Plateau plateau, Coup.Type typeCoup) {
         if (typeCoup == Coup.Type.ROQUE) {
             return isLegalCastlingOnPlateau(couleurJoueur, depart, arrivee, plateau);
@@ -106,6 +134,14 @@ public abstract class IAEngine {
         return legal;
     }
 
+    /**
+     * Vérifie si un roque est légal sur le plateau en tenant compte des règles du jeu, y compris les échecs et les cases intermédiaires.
+     * @param couleurJoueur La couleur du joueur pour whom vérifier le roque
+     * @param caseRoi La case du roi
+     * @param caseTour La case de la tour
+     * @param plateau Le plateau de jeu actuel
+     * @return true si le roque est légal, false sinon
+     */
     private boolean isLegalCastlingOnPlateau(Couleur couleurJoueur, Case caseRoi, Case caseTour, Plateau plateau) {
         if (echecSurPlateau(couleurJoueur, plateau)) {
             return false;
@@ -147,6 +183,13 @@ public abstract class IAEngine {
         return legal;
     }
 
+    /**
+     * Vérifie si une case est attaquée par une pièce adverse sur le plateau.
+     * @param caseCible La case à vérifier
+     * @param couleurJoueur La couleur du joueur pour whom vérifier l'attaque
+     * @param plateau Le plateau de jeu actuel
+     * @return true si la case est attaquée par une pièce adverse, false sinon
+     */
     private boolean caseEstAttaquee(Case caseCible, Couleur couleurJoueur, Plateau plateau) {
         for (Case casePiece : plateau.getAllCasePiece()) {
             Piece piece = casePiece.getPiece();
@@ -165,6 +208,12 @@ public abstract class IAEngine {
         return false;
     }
 
+    /**
+     * Vérifie si le roi du joueur est en échec sur le plateau.
+     * @param couleurJoueur La couleur du joueur pour whom vérifier l'échec
+     * @param plateau Le plateau de jeu actuel
+     * @return true si le roi du joueur est en échec, false sinon
+     */
     protected boolean echecSurPlateau(Couleur couleurJoueur, Plateau plateau) {
         Case caseRoi = null;
         List<Case> casesAvecPiece = plateau.getAllCasePiece();
@@ -187,6 +236,12 @@ public abstract class IAEngine {
         return false;
     }
 
+    /**
+     * Applique un coup sur le plateau en tenant compte des règles du jeu, y compris les échecs et les coups spéciaux.
+     * @param plateau Le plateau de jeu actuel
+     * @param coup Le coup à appliquer
+     * @param notTurn true si ce n'est pas le tour du joueur, false sinon
+     */
     protected void appliquerCoup(Plateau plateau, Coup coup, boolean notTurn) {
         Case depart = plateau.getCaseById(coup.departId);
         Case arrivee = plateau.getCaseById(coup.arriveeId);
@@ -202,6 +257,13 @@ public abstract class IAEngine {
         }
     }
 
+    /**
+     * Applique un roque sur le plateau en tenant compte des règles du jeu, y compris les échecs et les cases intermédiaires.
+     * @param plateau Le plateau de jeu actuel
+     * @param caseRoi La case du roi
+     * @param caseTour La case de la tour
+     * @param notTurn true si ce n'est pas le tour du joueur, false sinon
+     */
     private void appliquerRoque(Plateau plateau, Case caseRoi, Case caseTour, boolean notTurn) {
         Piece roi = caseRoi.getPiece();
         Piece tour = caseTour.getPiece();
@@ -237,6 +299,13 @@ public abstract class IAEngine {
         }
     }
 
+    /**
+     * Applique une promotion sur le plateau en tenant compte des règles du jeu, y compris les échecs et les coups spéciaux.
+     * @param plateau Le plateau de jeu actuel
+     * @param casePion La case du pion à promouvoir
+     * @param casePromotion La case d'arrivée du pion promu
+     * @param notTurn true si ce n'est pas le tour du joueur, false sinon
+     */
     private void appliquerPromotion(Plateau plateau, Case casePion, Case casePromotion, boolean notTurn) {
         plateau.deplacementPiece(casePion, casePromotion, true);
 
@@ -253,6 +322,11 @@ public abstract class IAEngine {
         }
     }
 
+    /**
+     * Détermine la couleur du joueur suivant dans l'ordre de jeu.
+     * @param couleurActuelle La couleur du joueur actuel
+     * @return La couleur du joueur suivant dans l'ordre de jeu
+     */
     protected Couleur couleurSuivante(Couleur couleurActuelle) {
         Couleur[] ordre = Partie.getInstance().getOrdre();
         for (int i = 0; i < ordre.length; i++) {
@@ -263,12 +337,23 @@ public abstract class IAEngine {
         return ordre[0];
     }
 
+    /**
+     * Vérifie si le plateau est dans une position terminale, c'est-à-dire si l'un des rois n'est plus en vie.
+     * @param plateau Le plateau de jeu actuel
+     * @return true si le plateau est dans une position terminale, false sinon
+     */
     protected boolean estTerminal(Plateau plateau) {
         return !roiEnVie(plateau, Couleur.BLANC)
                 || !roiEnVie(plateau, Couleur.NOIR)
                 || !roiEnVie(plateau, Couleur.ROUGE);
     }
 
+    /**
+     * Vérifie si le roi d'une couleur donnée est en vie sur le plateau.
+     * @param plateau Le plateau de jeu actuel
+     * @param couleur La couleur du roi à vérifier
+     * @return true si le roi de la couleur donnée est en vie, false sinon
+     */
     private boolean roiEnVie(Plateau plateau, Couleur couleur) {
         for (Case c : plateau.getAllCasePiece()) {
             if (c.getPiece().getCouleur() == couleur && c.getPiece() instanceof Roi) {
@@ -278,6 +363,11 @@ public abstract class IAEngine {
         return false;
     }
 
+    /**
+     * Évalue la position du plateau pour l'IA en attribuant un score basé sur les pièces présentes, les menaces, les contrôles de cases, etc.
+     * @param plateau Le plateau de jeu actuel
+     * @return Un score représentant la position du plateau pour l'IA (plus élevé est meilleur pour l'IA)
+     */
     abstract protected  int evaluateBoard(Plateau plateau);
 
 }

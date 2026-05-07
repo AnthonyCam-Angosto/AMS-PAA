@@ -10,10 +10,10 @@ import paa.modele.plateau.Case;
 import paa.modele.plateau.Plateau;
 
 /**
- * Moteur de calcul Minimax mutualise entre l'IA et les threads d'evaluation.
+ * Moteur de calcul Minmax mutualise entre l'IA et les threads d'evaluation.
  */
-public class MinimaxEngine extends  IAEngine {
-    public MinimaxEngine(Couleur couleurIA) {
+public class MinmaxEngine extends  IAEngine {
+    public MinmaxEngine(Couleur couleurIA) {
         super(couleurIA);
     }
 
@@ -39,7 +39,12 @@ public class MinimaxEngine extends  IAEngine {
         for (Coup coup : coups) {
             Plateau prochainEtat = plateau.copy();
             appliquerCoup(prochainEtat, coup, true);
-            int valeurCoup = minimax(prochainEtat, profondeur - 1, couleurSuivante(joueurCourant));
+            int valeurCoup=0;
+            if(joueurCourant == this.couleurIA){
+                minimax(prochainEtat, profondeur - 1, couleurSuivante(joueurCourant));
+            }else{
+                minimax(prochainEtat, profondeur, couleurSuivante(joueurCourant));
+            }
 
             if (estNoeudMax) {
                 meilleurScore = Math.max(meilleurScore, valeurCoup);
